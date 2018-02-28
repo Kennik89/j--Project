@@ -1,0 +1,33 @@
+<project default="runHandwrittenCompiler">
+	<target name="runHandwrittenCompiler">
+        <echo message="Compiling java files from j--tests project with handwritten j-- compiler"/>
+		<delete dir="${basedir}/gen" failonerror="no" />
+		<java classname="junit.RunHandwrittenCompiler">
+			<arg path="${basedir}"/>
+            <classpath>
+                <pathelement location="${basedir}/bin" />
+            </classpath>
+		</java>
+        <jar destfile="${basedir}/lib/output.jar" basedir="${basedir}/gen" includes="**"/>
+	</target>
+
+	<target name="runJavaCCCompiler">
+        <echo message="Compiling java files from j--tests project with javacc j-- compiler"/>
+		<delete dir="${basedir}/gen" failonerror="no" />
+		<java classname="junit.RunJavaCCCompiler">
+			<arg path="${basedir}"/>
+            <classpath>
+                <pathelement location="${basedir}/bin" />
+            </classpath>
+		</java>
+        <jar destfile="${basedir}/lib/output.jar" basedir="${basedir}/gen" includes="**"/>
+	</target>
+
+	<target name="runJavaCCGenerator">
+        <echo message="Generate javacc based scanner and parser java files with javacc tool"/>
+        <javacc target="${basedir}/src/jminusminus/j--.jj"
+                outputdirectory="${basedir}/src/jminusminus"
+                javacchome="${basedir}/lib"
+                static="false" />
+	</target>
+</project>
