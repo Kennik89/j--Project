@@ -105,6 +105,10 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
+                } else if (ch != '*' && ch != EOFCH)	{
+                	while (true)	{
+                		nextCh();
+                	}
                 } else {
                     return new TokenInfo(DIV, line);
                 }
