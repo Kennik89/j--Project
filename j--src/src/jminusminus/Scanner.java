@@ -58,15 +58,33 @@ class Scanner {
         reserved = new Hashtable<String, TokenKind>();
         reserved.put(ABSTRACT.image(), ABSTRACT);
         reserved.put(BOOLEAN.image(), BOOLEAN);
+        reserved.put(BREAK.image(), BREAK);
+        reserved.put(BYTE.image(), BYTE);
+        reserved.put(CASE.image(), CASE);
+        reserved.put(CATCH.image(), CATCH);
         reserved.put(CHAR.image(), CHAR);
         reserved.put(CLASS.image(), CLASS);
+        reserved.put(CONST.image(), CONST);
+        reserved.put(CONTINUE.image(), CONTINUE);
+        reserved.put(DEFAULT.image(), DEFAULT);
+        reserved.put(DO.image(), DO);
+        reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(ELSE.image(), ELSE);
         reserved.put(EXTENDS.image(), EXTENDS);
+        reserved.put(FINAL.image(), FINAL);
+        reserved.put(FINALLY.image(), FINALLY);
+        reserved.put(FLOAT.image(), FLOAT);
+        reserved.put(FOR.image(), FOR);
         reserved.put(FALSE.image(), FALSE);
+        reserved.put(GOTO.image(), GOTO);
         reserved.put(IF.image(), IF);
+        reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
         reserved.put(IMPORT.image(), IMPORT);
         reserved.put(INSTANCEOF.image(), INSTANCEOF);
         reserved.put(INT.image(), INT);
+        reserved.put(INTERFACE.image(), INTERFACE);
+        reserved.put(LONG.image(), LONG);
+        reserved.put(NATIVE.image(), NATIVE);
         reserved.put(NEW.image(), NEW);
         reserved.put(NULL.image(), NULL);
         reserved.put(PACKAGE.image(), PACKAGE);
@@ -74,11 +92,20 @@ class Scanner {
         reserved.put(PROTECTED.image(), PROTECTED);
         reserved.put(PUBLIC.image(), PUBLIC);
         reserved.put(RETURN.image(), RETURN);
+        reserved.put(SHORT.image(), SHORT);
         reserved.put(STATIC.image(), STATIC);
+        reserved.put(STRICTFP.image(), STRICTFP);
         reserved.put(SUPER.image(), SUPER);
+        reserved.put(SWITCH.image(), SWITCH);
+        reserved.put(SYNCHRONIZED.image(), SYNCHRONIZED);
         reserved.put(THIS.image(), THIS);
+        reserved.put(THROW.image(), THROW);
+        reserved.put(THROWS.image(), THROWS);
+        reserved.put(TRANSIENT.image(), TRANSIENT);
         reserved.put(TRUE.image(), TRUE);
+        reserved.put(TRY.image(), TRY);
         reserved.put(VOID.image(), VOID);
+        reserved.put(VOLATILE.image(), VOLATILE);
         reserved.put(WHILE.image(), WHILE);
 
         // Prime the pump.
@@ -154,22 +181,16 @@ class Scanner {
             nextCh();
             return new TokenInfo(COMMA, line);
         case '=':
-            nextCh();
-            if (ch == '=') {
-                nextCh();
-                return new TokenInfo(EQUAL, line);
-            } else {
-                return new TokenInfo(ASSIGN, line);
-            }
+        	return scanEquals();
+           
         case '!':
-            nextCh();
-            return new TokenInfo(LNOT, line);
+        	return scanExclamationMark();
+            
         case '~':
             nextCh();
             return new TokenInfo(BNOT, line);
         case '|':
-            nextCh();
-            return new TokenInfo(BIOR, line);
+        	return scanOr();
         case '^':
             nextCh();
             return new TokenInfo(BXOR, line);
@@ -177,85 +198,28 @@ class Scanner {
             nextCh();
             return new TokenInfo(STAR, line);
         case '%':
-            nextCh();
-            return new TokenInfo(REM, line);
+        	return scanModulo();
+            
         case '+':
-            nextCh();
-            if (ch == '=') {
-                nextCh();
-                return new TokenInfo(PLUS_ASSIGN, line);
-            } else if (ch == '+') {
-                nextCh();
-                return new TokenInfo(INC, line);
-            } else {
-                return new TokenInfo(PLUS, line);
-            }
+        	return scanPlus();
+            
         case '-':
-            nextCh();
-            if (ch == '-') {
-                nextCh();
-                return new TokenInfo(DEC, line);
-            } else {
-                return new TokenInfo(MINUS, line);
-            }
+        	return scanMinus();
+            
         case '&':
-	        	nextCh();
-	        	if (ch == '&') {
-	        		nextCh();
-	        		return new TokenInfo(LAND, line);
-	        	} else {
-	        		return new TokenInfo(BAND, line);
-	        	}
+        	return scanAnd();
+	        	
         case '>':
-	        	nextCh();
-	        	if (ch == '>') {
-	        		nextCh();
-	        		if (ch == '>') {
-	        			nextCh();
-	        			return new TokenInfo(LSR, line);
-	        		} else {
-	        			return new TokenInfo(ASR, line);
-	        		}
-	        	} else {
-	        		return new TokenInfo(GT, line);
-	        	}
+        	return scanGreater();
+	        	
         case '<':
-            nextCh();
-            if (ch == '=') {
-                nextCh();
-                return new TokenInfo(LE, line);
-            } else if (ch == '<') {
-                nextCh();
-                return new TokenInfo(ASL, line);
-            } else {
-                reportScannerError("Operator < is not supported in j--.");
-                return getNextToken();
-            }
+        	return scanLess();
+            
+            
         case '\'':
-            buffer = new StringBuffer();
-            buffer.append('\'');
-            nextCh();
-            if (ch == '\\') {
-                nextCh();
-                buffer.append(escape());
-            } else {
-                buffer.append(ch);
-                nextCh();
-            }
-            if (ch == '\'') {
-                buffer.append('\'');
-                nextCh();
-                return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
-            } else {
-                // Expected a ' ; report error and try to
-                // recover.
-                reportScannerError(ch
-                        + " found by scanner where closing ' was expected.");
-                while (ch != '\'' && ch != ';' && ch != '\n') {
-                    nextCh();
-                }
-                return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
-            }
+        	buffer = new StringBuffer();
+        	return scanSlash(buffer);
+            
         case '"':
             buffer = new StringBuffer();
             buffer.append("\"");
@@ -324,7 +288,121 @@ class Scanner {
         }
     }
 
-    /**
+    private TokenInfo scanExclamationMark() {
+    	nextCh();
+        return new TokenInfo(LNOT, line);
+	}
+
+	private TokenInfo scanPlus() {
+    	nextCh();
+        if (ch == '=') {
+            nextCh();
+            return new TokenInfo(PLUS_ASSIGN, line);
+        } else if (ch == '+') {
+            nextCh();
+            return new TokenInfo(INC, line);
+        } else {
+            return new TokenInfo(PLUS, line);
+        }
+	}
+
+	private TokenInfo scanLess() {
+    	nextCh();
+        if (ch == '=') {
+            nextCh();
+            return new TokenInfo(LE, line);
+        } else if (ch == '<') {
+            nextCh();
+            return new TokenInfo(ASL, line);
+        } else {
+            reportScannerError("Operator < is not supported in j--.");
+            return getNextToken();
+        }
+	}
+
+	private TokenInfo scanSlash(StringBuffer buffer) {
+        buffer.append('\'');
+        nextCh();
+        if (ch == '\\') {
+            nextCh();
+            buffer.append(escape());
+        } else {
+            buffer.append(ch);
+            nextCh();
+        }
+        if (ch == '\'') {
+            buffer.append('\'');
+            nextCh();
+            return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
+        } else {
+            // Expected a ' ; report error and try to
+            // recover.
+            reportScannerError(ch
+                    + " found by scanner where closing ' was expected.");
+            while (ch != '\'' && ch != ';' && ch != '\n') {
+                nextCh();
+            }
+            return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
+        }
+	}
+
+	private TokenInfo scanGreater() {
+		nextCh();
+    	if (ch == '>') {
+    		nextCh();
+    		if (ch == '>') {
+    			nextCh();
+    			return new TokenInfo(LSR, line);
+    		} else {
+    			return new TokenInfo(ASR, line);
+    		}
+    	} else {
+    		return new TokenInfo(GT, line);
+    	}
+	}
+
+	private TokenInfo scanAnd() {
+		nextCh();
+    	if (ch == '&') {
+    		nextCh();
+    		return new TokenInfo(LAND, line);
+    	} else {
+    		return new TokenInfo(BAND, line);
+    	}
+	}
+
+	private TokenInfo scanMinus() {
+		nextCh();
+        if (ch == '-') {
+            nextCh();
+            return new TokenInfo(DEC, line);
+        } else {
+            return new TokenInfo(MINUS, line);
+        }
+	}
+
+	private TokenInfo scanModulo() {
+		nextCh();
+        return new TokenInfo(REM, line);
+		
+	}
+
+	private TokenInfo scanOr() {
+        nextCh();
+        return new TokenInfo(BIOR, line);
+	}
+
+	private TokenInfo scanEquals() {
+		 nextCh();
+         if (ch == '=') {
+             nextCh();
+             return new TokenInfo(EQUAL, line);
+         } else {
+             return new TokenInfo(ASSIGN, line);
+         }
+	}
+
+	/**
      * Scan and return an escaped character.
      * 
      * @return escaped character.
