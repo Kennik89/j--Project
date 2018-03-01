@@ -32,8 +32,6 @@ THIS        ::= "this"
 TRUE        ::= "true"
 VOID        ::= "void"
 WHILE       ::= "while"
-<<<<<<< HEAD
-=======
 CONSTANT    ::= "const"
 FINAL       ::= "finally"
 THIS        ::= "this"
@@ -67,7 +65,6 @@ VOLATILE    ::= "volatile"
 FINAL       ::= "final"
 SYNCHRONIZED ::= "synchronized"
 WHILE       ::= "while"
->>>>>>> lexicalgrammar
 
 // Operators
 ASSIGN      ::= "="
@@ -90,8 +87,6 @@ BNOT        ::= "~"
 BIOR        ::= "|"
 BXOR        ::= "^"
 BAND        ::= "&"
-<<<<<<< HEAD
-=======
 QM          ::= "?"
 BNOT        ::= "∼"
 NEQUAL      ::= "!="
@@ -112,7 +107,6 @@ BIOREQUAL   ::= "|="
 BIORBIOR    ::= "||"
 BANDEQUAL   ::= "&="
 ANDAND      ::= "&&"
->>>>>>> lexicalgrammar
 
 // Separators
 COMMA       ::= ","
@@ -124,10 +118,7 @@ RBRACK      ::= "]"
 RCURLY      ::= "}"
 RPAREN      ::= ")"
 SEMI        ::= ";"
-<<<<<<< HEAD
-=======
 SEMICOLON   ::= ":"
->>>>>>> lexicalgrammar
 
 // Identifiers
 IDENTIFIER ::= ("a"-"z"|"A"-"Z"|"_"|"$") {"a"-"z"|"A"-"Z"|"_"|"0"-"9"|"$"}
@@ -140,5 +131,4 @@ CHAR_LITERAL   ::= "'" (ESC | ~("'"|"\n"|"\r"|"\\")) "'"
 
 // End of file
 EOF            ::= "<end of file>"
-
 
