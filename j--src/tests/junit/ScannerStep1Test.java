@@ -7,35 +7,35 @@ import jminusminus.Main;
 import java.io.File;
 
 /**
- * JUnit test case for pre-analysis of the AST.
+ * JUnit test case for the scanner.
  */
 
-public class PreAnalysisTest extends TestCase {
+public class ScannerStep1Test extends TestCase {
 
     /**
-     * Construct a PreAnalysisTest object.
+     * Construct a ScannerTest object.
      */
 
-    public PreAnalysisTest() {
-        super("JUnit test case for pre-analysis of the AST");
+    public ScannerStep1Test() {
+        super("JUnit test case for the scanner");
     }
 
     /**
-     * Run the compiler against each pass-test file under the folder specified
-     * by PASS_TESTS_DIR property.
+     * Run the scanner against each pass-test file under the folder specified by
+     * PASS_TESTS_DIR property. FRONT_END property determines the frontend
+     * (handwritten or JavaCC) to use.
      */
 
     public void testPass() {
-        File passTestsDir = new File(System.getProperty("PASS_TESTS_DIR"));
-        String frontEnd = System.getProperty("FRONT_END");
+        File passTestsDir = new File(System.getProperty("PASS_TESTS_DIR"), "step1");
         File[] files = passTestsDir.listFiles();
         boolean errorHasOccurred = false;
         for (int i = 0; files != null && i < files.length; i++) {
             if (files[i].toString().endsWith(".java")) {
-                System.out.printf(
-                        "Running compiler (up to pre-analysis) on %s ...\n\n",
+                String[] args = null;
+                System.out.printf("Running handwritten scanner on %s ...\n\n",
                         files[i].toString());
-                String[] args = { "-pa", files[i].toString() };
+                args = new String[] { "-t", files[i].toString() };
                 Main.main(args);
                 System.out.printf("\n\n");
 
@@ -56,7 +56,7 @@ public class PreAnalysisTest extends TestCase {
      */
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(PreAnalysisTest.class);
+        junit.textui.TestRunner.run(ScannerStep1Test.class);
     }
 
 }

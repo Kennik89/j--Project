@@ -76,6 +76,10 @@ class Scanner {
         reserved.put(FLOAT.image(), FLOAT);
         reserved.put(FOR.image(), FOR);
         reserved.put(FALSE.image(), FALSE);
+        reserved.put(FINAL.image(), FINAL);
+        reserved.put(FINALLY.image(), FINALLY);
+        reserved.put(FLOAT.image(), FLOAT);
+        reserved.put(FOR.image(), FOR);
         reserved.put(GOTO.image(), GOTO);
         reserved.put(IF.image(), IF);
         reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
@@ -180,6 +184,12 @@ class Scanner {
         case ',':
             nextCh();
             return new TokenInfo(COMMA, line);
+        case ':':
+            nextCh();
+            return new TokenInfo(COLON, line);
+        case '?':
+            nextCh();
+            return new TokenInfo(QM, line);
         case '=':
         	return scanEquals();
            
@@ -315,8 +325,7 @@ class Scanner {
             nextCh();
             return new TokenInfo(ASL, line);
         } else {
-            reportScannerError("Operator < is not supported in j--.");
-            return getNextToken();
+            return new TokenInfo(LT, line);
         }
 	}
 
