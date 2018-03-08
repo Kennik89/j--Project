@@ -100,7 +100,7 @@ public class Main {
                 scanner.next();
                 token = scanner.token();
                 System.out.printf("%d\t : %s = %s\n", token.line(), token
-                        .tokenRep(), token.image());
+                        .kind().name(), token.image());
             } while (token.kind() != EOF);
             errorHasOccurred |= scanner.errorHasOccured();
             return;

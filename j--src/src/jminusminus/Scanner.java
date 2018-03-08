@@ -11,7 +11,7 @@ import static jminusminus.TokenKind.*;
 
 /**
  * A lexical analyzer for j--, that has no backtracking mechanism.
- * 
+ *
  * When you add a new token to the scanner, you must also add an entry in the
  * TokenKind enum in TokenInfo.java specifying the kind and image of the new
  * token.
@@ -42,7 +42,7 @@ class Scanner {
 
     /**
      * Construct a Scanner object.
-     * 
+     *
      * @param fileName
      *            the name of the file containing the source.
      * @exception FileNotFoundException
@@ -58,15 +58,33 @@ class Scanner {
         reserved = new Hashtable<String, TokenKind>();
         reserved.put(ABSTRACT.image(), ABSTRACT);
         reserved.put(BOOLEAN.image(), BOOLEAN);
+        reserved.put(BREAK.image(), BREAK);
+        reserved.put(BYTE.image(), BYTE);
+        reserved.put(CASE.image(), CASE);
+        reserved.put(CATCH.image(), CATCH);
         reserved.put(CHAR.image(), CHAR);
         reserved.put(CLASS.image(), CLASS);
+        reserved.put(CONST.image(), CONST);
+        reserved.put(CONTINUE.image(), CONTINUE);
+        reserved.put(DEFAULT.image(), DEFAULT);
+        reserved.put(DO.image(), DO);
+        reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(ELSE.image(), ELSE);
         reserved.put(EXTENDS.image(), EXTENDS);
         reserved.put(FALSE.image(), FALSE);
+        reserved.put(FINAL.image(), FINAL);
+        reserved.put(FINALLY.image(), FINALLY);
+        reserved.put(FLOAT.image(), FLOAT);
+        reserved.put(FOR.image(), FOR);
+        reserved.put(GOTO.image(), GOTO);
         reserved.put(IF.image(), IF);
+        reserved.put(IMPLEMENTS.image(), IMPLEMENTS);
         reserved.put(IMPORT.image(), IMPORT);
         reserved.put(INSTANCEOF.image(), INSTANCEOF);
         reserved.put(INT.image(), INT);
+        reserved.put(INTERFACE.image(), INTERFACE);
+        reserved.put(LONG.image(), LONG);
+        reserved.put(NATIVE.image(), NATIVE);
         reserved.put(NEW.image(), NEW);
         reserved.put(NULL.image(), NULL);
         reserved.put(PACKAGE.image(), PACKAGE);
@@ -74,11 +92,20 @@ class Scanner {
         reserved.put(PROTECTED.image(), PROTECTED);
         reserved.put(PUBLIC.image(), PUBLIC);
         reserved.put(RETURN.image(), RETURN);
+        reserved.put(SHORT.image(), SHORT);
         reserved.put(STATIC.image(), STATIC);
+        reserved.put(STRICTFP.image(), STRICTFP);
         reserved.put(SUPER.image(), SUPER);
+        reserved.put(SWITCH.image(), SWITCH);
+        reserved.put(SYNCHRONIZED.image(), SYNCHRONIZED);
         reserved.put(THIS.image(), THIS);
+        reserved.put(THROW.image(), THROW);
+        reserved.put(THROWS.image(), THROWS);
+        reserved.put(TRANSIENT.image(), TRANSIENT);
         reserved.put(TRUE.image(), TRUE);
+        reserved.put(TRY.image(), TRY);
         reserved.put(VOID.image(), VOID);
+        reserved.put(VOLATILE.image(), VOLATILE);
         reserved.put(WHILE.image(), WHILE);
 
         // Prime the pump.
@@ -87,7 +114,7 @@ class Scanner {
 
     /**
      * Scan the next token from input.
-     * 
+     *
      * @return the the next scanned token.
      */
 
@@ -100,12 +127,12 @@ class Scanner {
             }
             if (ch == '/') {
                 nextCh();
-                if (ch == '/') {
+                if (ch == '/') { // Singleline comment
                     // CharReader maps all new lines to '\n'
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
-                } else if (ch == '*')	{
+                } else if (ch == '*')	{ // Multiline comment
                 	nextCh();
                 	while (true)	{
                 		while (ch != '*' && ch != EOFCH)	{
@@ -118,12 +145,13 @@ class Scanner {
                 		if (ch == '/')	{
                 			break;
                 		}
-                		
                 	}
+                } else if (ch == '=') {
+                    return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
                 }
-            } else {
+              } else {
                 moreWhiteSpace = false;
             }
         }
@@ -153,109 +181,55 @@ class Scanner {
         case ',':
             nextCh();
             return new TokenInfo(COMMA, line);
+        case ':':
+            nextCh();
+            return new TokenInfo(COLON, line);
+        case '?':
+            nextCh();
+            return new TokenInfo(QM, line);
+
+
         case '=':
-            nextCh();
-            if (ch == '=') {
-                nextCh();
-                return new TokenInfo(EQUAL, line);
-            } else {
-                return new TokenInfo(ASSIGN, line);
-            }
+        	return scanEquals();
+
         case '!':
-            nextCh();
-            return new TokenInfo(LNOT, line);
+        	return scanExclamationMark();
+
         case '~':
-            nextCh();
-            return new TokenInfo(BNOT, line);
+        	return scanTilde();
+
         case '|':
-            nextCh();
-            return new TokenInfo(BIOR, line);
+        	return scanOr();
+
         case '^':
-            nextCh();
-            return new TokenInfo(BXOR, line);
+        	return scanHat();
+
         case '*':
-            nextCh();
-            return new TokenInfo(STAR, line);
+        	return scanStar();
+
         case '%':
-            nextCh();
-            return new TokenInfo(REM, line);
+        	return scanModulo();
+
         case '+':
-            nextCh();
-            if (ch == '=') {
-                nextCh();
-                return new TokenInfo(PLUS_ASSIGN, line);
-            } else if (ch == '+') {
-                nextCh();
-                return new TokenInfo(INC, line);
-            } else {
-                return new TokenInfo(PLUS, line);
-            }
+        	return scanPlus();
+
         case '-':
-            nextCh();
-            if (ch == '-') {
-                nextCh();
-                return new TokenInfo(DEC, line);
-            } else {
-                return new TokenInfo(MINUS, line);
-            }
+        	return scanMinus();
+
         case '&':
-	        	nextCh();
-	        	if (ch == '&') {
-	        		nextCh();
-	        		return new TokenInfo(LAND, line);
-	        	} else {
-	        		return new TokenInfo(BAND, line);
-	        	}
+        	return scanAnd();
+
         case '>':
-	        	nextCh();
-	        	if (ch == '>') {
-	        		nextCh();
-	        		if (ch == '>') {
-	        			nextCh();
-	        			return new TokenInfo(LSR, line);
-	        		} else {
-	        			return new TokenInfo(ASR, line);
-	        		}
-	        	} else {
-	        		return new TokenInfo(GT, line);
-	        	}
+        	return scanGreater();
+
         case '<':
-            nextCh();
-            if (ch == '=') {
-                nextCh();
-                return new TokenInfo(LE, line);
-            } else if (ch == '<') {
-                nextCh();
-                return new TokenInfo(ASL, line);
-            } else {
-                reportScannerError("Operator < is not supported in j--.");
-                return getNextToken();
-            }
+        	return scanLess();
+
+
         case '\'':
-            buffer = new StringBuffer();
-            buffer.append('\'');
-            nextCh();
-            if (ch == '\\') {
-                nextCh();
-                buffer.append(escape());
-            } else {
-                buffer.append(ch);
-                nextCh();
-            }
-            if (ch == '\'') {
-                buffer.append('\'');
-                nextCh();
-                return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
-            } else {
-                // Expected a ' ; report error and try to
-                // recover.
-                reportScannerError(ch
-                        + " found by scanner where closing ' was expected.");
-                while (ch != '\'' && ch != ';' && ch != '\n') {
-                    nextCh();
-                }
-                return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
-            }
+        	buffer = new StringBuffer();
+        	return scanChar(buffer);
+
         case '"':
             buffer = new StringBuffer();
             buffer.append("\"");
@@ -324,9 +298,182 @@ class Scanner {
         }
     }
 
-    /**
+    private TokenInfo scanExclamationMark() {
+    		nextCh();
+    		if (ch == '=') {
+    			nextCh();
+    			return new TokenInfo(LNOT_EQUAL, line);
+		} else {
+	        return new TokenInfo(LNOT, line);
+		}
+	}
+
+	private TokenInfo scanPlus() {
+		nextCh();
+        if (ch == '=') {
+            nextCh();
+            return new TokenInfo(PLUS_ASSIGN, line);
+        } else if (ch == '+') {
+            nextCh();
+            return new TokenInfo(INC, line);
+        } else {
+            return new TokenInfo(PLUS, line);
+        }
+	}
+
+	private TokenInfo scanLess() {
+		nextCh();
+        if (ch == '<') {
+            nextCh();
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(ASL_ASSIGN, line);
+            } else {
+            		return new TokenInfo(ASL, line);
+            }
+        } else if (ch == '=') {
+            nextCh();
+            return new TokenInfo(LE, line);
+        } else {
+            return new TokenInfo(LT, line);
+        }
+	}
+
+	private TokenInfo scanChar(StringBuffer buffer) {
+        buffer.append('\'');
+        nextCh();
+        if (ch == '\\') {
+            nextCh();
+            buffer.append(escape());
+        } else {
+            buffer.append(ch);
+            nextCh();
+        }
+        if (ch == '\'') {
+            buffer.append('\'');
+            nextCh();
+            return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
+        } else {
+            // Expected a ' ; report error and try to
+            // recover.
+            reportScannerError(ch
+                    + " found by scanner where closing ' was expected.");
+            while (ch != '\'' && ch != ';' && ch != '\n') {
+                nextCh();
+            }
+            return new TokenInfo(CHAR_LITERAL, buffer.toString(), line);
+        }
+	}
+
+	private TokenInfo scanGreater() {
+		nextCh();
+	    	if (ch == '>') {
+	    		nextCh();
+	    		if (ch == '>') {
+	    			nextCh();
+		    		if (ch == '=') {
+		    			return new TokenInfo(LSR_ASSIGN, line);
+		    		} else {
+		    			return new TokenInfo(LSR, line);
+		    		}
+	    		} else if (ch == '=') {
+	    			nextCh();
+	    			return new TokenInfo(ASR_ASSIGN, line);
+	    		} else {
+	    			return new TokenInfo(ASR, line);
+	    		}
+    		} else if (ch == '=') {
+    			nextCh();
+    			return new TokenInfo(GE, line);
+	    	} else {
+	    		return new TokenInfo(GT, line);
+	    	}
+	}
+
+	private TokenInfo scanAnd() {
+		nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BAND_ASSIGN, line);
+		} else if (ch == '&') {
+    			nextCh();
+    			return new TokenInfo(LAND, line);
+		} else {
+    			return new TokenInfo(BAND, line);
+		}
+	}
+
+	private TokenInfo scanMinus() {
+		nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(MINUS_ASSIGN, line);
+        } else if (ch == '-') {
+            nextCh();
+            return new TokenInfo(DEC, line);
+        } else {
+            return new TokenInfo(MINUS, line);
+        }
+	}
+
+	private TokenInfo scanModulo() {
+		nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(REM_ASSIGN, line);
+		} else {
+			return new TokenInfo(REM, line);
+		}
+	}
+
+	private TokenInfo scanOr() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BIOR_ASSIGN, line);
+		} else {
+			return new TokenInfo(BIOR, line);
+		}
+	}
+
+	private TokenInfo scanStar() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(STAR_ASSIGN, line);
+		} else {
+	        return new TokenInfo(STAR, line);
+		}
+	}
+
+	private TokenInfo scanTilde() {
+        nextCh();
+        return new TokenInfo(BNOT, line);
+	}
+
+	private TokenInfo scanHat() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BXOR_ASSIGN, line);
+		} else {
+			return new TokenInfo(BXOR, line);
+		}
+	}
+
+	private TokenInfo scanEquals() {
+		 nextCh();
+         if (ch == '=') {
+             nextCh();
+             return new TokenInfo(EQUAL, line);
+         } else {
+             return new TokenInfo(ASSIGN, line);
+         }
+	}
+
+	/**
      * Scan and return an escaped character.
-     * 
+     *
      * @return escaped character.
      */
 
@@ -380,7 +527,7 @@ class Scanner {
      * Report a lexcial error and record the fact that an error has occured.
      * This fact can be ascertained from the Scanner by sending it an
      * errorHasOccurred() message.
-     * 
+     *
      * @param message
      *            message identifying the error.
      * @param args
@@ -396,7 +543,7 @@ class Scanner {
 
     /**
      * Return true if the specified character is a digit (0-9); false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -408,7 +555,7 @@ class Scanner {
 
     /**
      * Return true if the specified character is a whitespace; false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -428,7 +575,7 @@ class Scanner {
     /**
      * Return true if the specified character can start an identifier name;
      * false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -441,7 +588,7 @@ class Scanner {
     /**
      * Return true if the specified character can be part of an identifier name;
      * false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -453,7 +600,7 @@ class Scanner {
 
     /**
      * Has an error occurred up to now in lexical analysis?
-     * 
+     *
      * @return true or false.
      */
 
@@ -463,7 +610,7 @@ class Scanner {
 
     /**
      * The name of the source file.
-     * 
+     *
      * @return name of the source file.
      */
 
@@ -492,7 +639,7 @@ class CharReader {
 
     /**
      * Construct a CharReader from a file name.
-     * 
+     *
      * @param fileName
      *            the name of the input file.
      * @exception FileNotFoundException
@@ -506,7 +653,7 @@ class CharReader {
 
     /**
      * Scan the next character.
-     * 
+     *
      * @return the character scanned.
      * @exception IOException
      *                if an I/O error occurs.
@@ -518,7 +665,7 @@ class CharReader {
 
     /**
      * The current line number in the source file, starting at 1.
-     * 
+     *
      * @return the current line number.
      */
 
@@ -529,7 +676,7 @@ class CharReader {
 
     /**
      * Return the file name.
-     * 
+     *
      * @return the file name.
      */
 
@@ -539,7 +686,7 @@ class CharReader {
 
     /**
      * Close the file.
-     * 
+     *
      * @exception IOException
      *                if an I/O error occurs.
      */
