@@ -132,6 +132,8 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
+                } else if (ch == '=') {
+                    return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
                 }
@@ -171,6 +173,8 @@ class Scanner {
         case '?':
             nextCh();
             return new TokenInfo(QM, line);
+
+
         case '=':
         	return scanEquals();
            
@@ -178,16 +182,17 @@ class Scanner {
         	return scanExclamationMark();
             
         case '~':
-            nextCh();
-            return new TokenInfo(BNOT, line);
+        	return scanTilde();
+
         case '|':
         	return scanOr();
+
         case '^':
-            nextCh();
-            return new TokenInfo(BXOR, line);
+        	return scanHat();
+        	
         case '*':
-            nextCh();
-            return new TokenInfo(STAR, line);
+        	return scanStar();
+
         case '%':
         	return scanModulo();
             
@@ -209,7 +214,7 @@ class Scanner {
             
         case '\'':
         	buffer = new StringBuffer();
-        	return scanSlash(buffer);
+        	return scanChar(buffer);
             
         case '"':
             buffer = new StringBuffer();
@@ -280,12 +285,17 @@ class Scanner {
     }
 
     private TokenInfo scanExclamationMark() {
-    	nextCh();
-        return new TokenInfo(LNOT, line);
+    		nextCh();
+    		if (ch == '=') {
+    			nextCh();
+    			return new TokenInfo(LNOT_EQUAL, line);
+		} else {
+	        return new TokenInfo(LNOT, line);
+		}
 	}
 
 	private TokenInfo scanPlus() {
-    	nextCh();
+		nextCh();
         if (ch == '=') {
             nextCh();
             return new TokenInfo(PLUS_ASSIGN, line);
@@ -298,19 +308,24 @@ class Scanner {
 	}
 
 	private TokenInfo scanLess() {
-    	nextCh();
-        if (ch == '=') {
+		nextCh();
+        if (ch == '<') {
+            nextCh();
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(ASL_ASSIGN, line);
+            } else {
+            		return new TokenInfo(ASL, line);
+            }
+        } else if (ch == '=') {
             nextCh();
             return new TokenInfo(LE, line);
-        } else if (ch == '<') {
-            nextCh();
-            return new TokenInfo(ASL, line);
         } else {
             return new TokenInfo(LT, line);
         }
 	}
 
-	private TokenInfo scanSlash(StringBuffer buffer) {
+	private TokenInfo scanChar(StringBuffer buffer) {
         buffer.append('\'');
         nextCh();
         if (ch == '\\') {
@@ -338,32 +353,48 @@ class Scanner {
 
 	private TokenInfo scanGreater() {
 		nextCh();
-    	if (ch == '>') {
-    		nextCh();
-    		if (ch == '>') {
+	    	if (ch == '>') {
+	    		nextCh();
+	    		if (ch == '>') {
+	    			nextCh();
+		    		if (ch == '=') {
+		    			return new TokenInfo(LSR_ASSIGN, line);
+		    		} else {
+		    			return new TokenInfo(LSR, line);
+		    		}
+	    		} else if (ch == '=') {
+	    			nextCh();
+	    			return new TokenInfo(ASR_ASSIGN, line);
+	    		} else {
+	    			return new TokenInfo(ASR, line);
+	    		}
+    		} else if (ch == '=') {
     			nextCh();
-    			return new TokenInfo(LSR, line);
-    		} else {
-    			return new TokenInfo(ASR, line);
-    		}
-    	} else {
-    		return new TokenInfo(GT, line);
-    	}
+    			return new TokenInfo(GE, line);
+	    	} else {
+	    		return new TokenInfo(GT, line);
+	    	}
 	}
 
 	private TokenInfo scanAnd() {
 		nextCh();
-    	if (ch == '&') {
-    		nextCh();
-    		return new TokenInfo(LAND, line);
-    	} else {
-    		return new TokenInfo(BAND, line);
-    	}
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BAND_ASSIGN, line);
+		} else if (ch == '&') {
+    			nextCh();
+    			return new TokenInfo(LAND, line);
+		} else {
+    			return new TokenInfo(BAND, line);
+		}
 	}
 
 	private TokenInfo scanMinus() {
 		nextCh();
-        if (ch == '-') {
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(MINUS_ASSIGN, line);
+        } else if (ch == '-') {
             nextCh();
             return new TokenInfo(DEC, line);
         } else {
@@ -373,13 +404,47 @@ class Scanner {
 
 	private TokenInfo scanModulo() {
 		nextCh();
-        return new TokenInfo(REM, line);
-		
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(REM_ASSIGN, line);
+		} else {
+			return new TokenInfo(REM, line);
+		}
 	}
 
 	private TokenInfo scanOr() {
         nextCh();
-        return new TokenInfo(BIOR, line);
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BIOR_ASSIGN, line);
+		} else {
+			return new TokenInfo(BIOR, line);
+		}
+	}
+
+	private TokenInfo scanStar() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(STAR_ASSIGN, line);
+		} else {
+	        return new TokenInfo(STAR, line);
+		}
+	}
+
+	private TokenInfo scanTilde() {
+        nextCh();
+        return new TokenInfo(BNOT, line);
+	}
+
+	private TokenInfo scanHat() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BXOR_ASSIGN, line);
+		} else {
+			return new TokenInfo(BXOR, line);
+		}
 	}
 
 	private TokenInfo scanEquals() {
