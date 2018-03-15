@@ -71,10 +71,6 @@ class Scanner {
         reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(ELSE.image(), ELSE);
         reserved.put(EXTENDS.image(), EXTENDS);
-        reserved.put(FINAL.image(), FINAL);
-        reserved.put(FINALLY.image(), FINALLY);
-        reserved.put(FLOAT.image(), FLOAT);
-        reserved.put(FOR.image(), FOR);
         reserved.put(FALSE.image(), FALSE);
         reserved.put(FINAL.image(), FINAL);
         reserved.put(FINALLY.image(), FINALLY);
