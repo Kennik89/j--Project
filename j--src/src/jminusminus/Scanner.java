@@ -11,7 +11,7 @@ import static jminusminus.TokenKind.*;
 
 /**
  * A lexical analyzer for j--, that has no backtracking mechanism.
- * 
+ *
  * When you add a new token to the scanner, you must also add an entry in the
  * TokenKind enum in TokenInfo.java specifying the kind and image of the new
  * token.
@@ -42,7 +42,7 @@ class Scanner {
 
     /**
      * Construct a Scanner object.
-     * 
+     *
      * @param fileName
      *            the name of the file containing the source.
      * @exception FileNotFoundException
@@ -71,10 +71,6 @@ class Scanner {
         reserved.put(DOUBLE.image(), DOUBLE);
         reserved.put(ELSE.image(), ELSE);
         reserved.put(EXTENDS.image(), EXTENDS);
-        reserved.put(FINAL.image(), FINAL);
-        reserved.put(FINALLY.image(), FINALLY);
-        reserved.put(FLOAT.image(), FLOAT);
-        reserved.put(FOR.image(), FOR);
         reserved.put(FALSE.image(), FALSE);
         reserved.put(FINAL.image(), FINAL);
         reserved.put(FINALLY.image(), FINALLY);
@@ -118,7 +114,7 @@ class Scanner {
 
     /**
      * Scan the next token from input.
-     * 
+     *
      * @return the the next scanned token.
      */
 
@@ -131,12 +127,12 @@ class Scanner {
             }
             if (ch == '/') {
                 nextCh();
-                if (ch == '/') {
+                if (ch == '/') { // Singleline comment
                     // CharReader maps all new lines to '\n'
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
-                } else if (ch == '*')	{
+                } else if (ch == '*')	{ // Multiline comment
                 	nextCh();
                 	while (true)	{
                 		while (ch != '*' && ch != EOFCH)	{
@@ -149,12 +145,13 @@ class Scanner {
                 		if (ch == '/')	{
                 			break;
                 		}
-                		
                 	}
+                } else if (ch == '=') {
+                    return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
                 }
-            } else {
+              } else {
                 moreWhiteSpace = false;
             }
         }
@@ -178,6 +175,9 @@ class Scanner {
         case ']':
             nextCh();
             return new TokenInfo(RBRACK, line);
+        case ':':
+            nextCh();
+            return new TokenInfo(COLON, line);
         case ';':
             nextCh();
             return new TokenInfo(SEMI, line);
@@ -190,46 +190,49 @@ class Scanner {
         case '?':
             nextCh();
             return new TokenInfo(QM, line);
+
+
         case '=':
         	return scanEquals();
-           
+
         case '!':
         	return scanExclamationMark();
-            
+
         case '~':
-            nextCh();
-            return new TokenInfo(BNOT, line);
+        	return scanTilde();
+
         case '|':
         	return scanOr();
+
         case '^':
-            nextCh();
-            return new TokenInfo(BXOR, line);
+        	return scanHat();
+
         case '*':
-            nextCh();
-            return new TokenInfo(STAR, line);
+        	return scanStar();
+
         case '%':
         	return scanModulo();
-            
+
         case '+':
         	return scanPlus();
-            
+
         case '-':
         	return scanMinus();
-            
+
         case '&':
         	return scanAnd();
-	        	
+
         case '>':
         	return scanGreater();
-	        	
+
         case '<':
         	return scanLess();
-            
-            
+
+
         case '\'':
         	buffer = new StringBuffer();
-        	return scanSlash(buffer);
-            
+        	return scanChar(buffer);
+
         case '"':
             buffer = new StringBuffer();
             buffer.append("\"");
@@ -299,12 +302,17 @@ class Scanner {
     }
 
     private TokenInfo scanExclamationMark() {
-    	nextCh();
-        return new TokenInfo(LNOT, line);
+    		nextCh();
+    		if (ch == '=') {
+    			nextCh();
+    			return new TokenInfo(LNOT_EQUAL, line);
+		} else {
+	        return new TokenInfo(LNOT, line);
+		}
 	}
 
 	private TokenInfo scanPlus() {
-    	nextCh();
+		nextCh();
         if (ch == '=') {
             nextCh();
             return new TokenInfo(PLUS_ASSIGN, line);
@@ -317,19 +325,24 @@ class Scanner {
 	}
 
 	private TokenInfo scanLess() {
-    	nextCh();
-        if (ch == '=') {
+		nextCh();
+        if (ch == '<') {
+            nextCh();
+            if (ch == '=') {
+                nextCh();
+                return new TokenInfo(ASL_ASSIGN, line);
+            } else {
+            		return new TokenInfo(ASL, line);
+            }
+        } else if (ch == '=') {
             nextCh();
             return new TokenInfo(LE, line);
-        } else if (ch == '<') {
-            nextCh();
-            return new TokenInfo(ASL, line);
         } else {
             return new TokenInfo(LT, line);
         }
 	}
 
-	private TokenInfo scanSlash(StringBuffer buffer) {
+	private TokenInfo scanChar(StringBuffer buffer) {
         buffer.append('\'');
         nextCh();
         if (ch == '\\') {
@@ -357,32 +370,48 @@ class Scanner {
 
 	private TokenInfo scanGreater() {
 		nextCh();
-    	if (ch == '>') {
-    		nextCh();
-    		if (ch == '>') {
+	    	if (ch == '>') {
+	    		nextCh();
+	    		if (ch == '>') {
+	    			nextCh();
+		    		if (ch == '=') {
+		    			return new TokenInfo(LSR_ASSIGN, line);
+		    		} else {
+		    			return new TokenInfo(LSR, line);
+		    		}
+	    		} else if (ch == '=') {
+	    			nextCh();
+	    			return new TokenInfo(ASR_ASSIGN, line);
+	    		} else {
+	    			return new TokenInfo(ASR, line);
+	    		}
+    		} else if (ch == '=') {
     			nextCh();
-    			return new TokenInfo(LSR, line);
-    		} else {
-    			return new TokenInfo(ASR, line);
-    		}
-    	} else {
-    		return new TokenInfo(GT, line);
-    	}
+    			return new TokenInfo(GE, line);
+	    	} else {
+	    		return new TokenInfo(GT, line);
+	    	}
 	}
 
 	private TokenInfo scanAnd() {
 		nextCh();
-    	if (ch == '&') {
-    		nextCh();
-    		return new TokenInfo(LAND, line);
-    	} else {
-    		return new TokenInfo(BAND, line);
-    	}
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BAND_ASSIGN, line);
+		} else if (ch == '&') {
+    			nextCh();
+    			return new TokenInfo(LAND, line);
+		} else {
+    			return new TokenInfo(BAND, line);
+		}
 	}
 
 	private TokenInfo scanMinus() {
 		nextCh();
-        if (ch == '-') {
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(MINUS_ASSIGN, line);
+        } else if (ch == '-') {
             nextCh();
             return new TokenInfo(DEC, line);
         } else {
@@ -392,13 +421,47 @@ class Scanner {
 
 	private TokenInfo scanModulo() {
 		nextCh();
-        return new TokenInfo(REM, line);
-		
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(REM_ASSIGN, line);
+		} else {
+			return new TokenInfo(REM, line);
+		}
 	}
 
 	private TokenInfo scanOr() {
         nextCh();
-        return new TokenInfo(BIOR, line);
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BIOR_ASSIGN, line);
+		} else {
+			return new TokenInfo(BIOR, line);
+		}
+	}
+
+	private TokenInfo scanStar() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(STAR_ASSIGN, line);
+		} else {
+	        return new TokenInfo(STAR, line);
+		}
+	}
+
+	private TokenInfo scanTilde() {
+        nextCh();
+        return new TokenInfo(BNOT, line);
+	}
+
+	private TokenInfo scanHat() {
+        nextCh();
+		if (ch == '=') {
+            nextCh();
+            return new TokenInfo(BXOR_ASSIGN, line);
+		} else {
+			return new TokenInfo(BXOR, line);
+		}
 	}
 
 	private TokenInfo scanEquals() {
@@ -413,7 +476,7 @@ class Scanner {
 
 	/**
      * Scan and return an escaped character.
-     * 
+     *
      * @return escaped character.
      */
 
@@ -467,7 +530,7 @@ class Scanner {
      * Report a lexcial error and record the fact that an error has occured.
      * This fact can be ascertained from the Scanner by sending it an
      * errorHasOccurred() message.
-     * 
+     *
      * @param message
      *            message identifying the error.
      * @param args
@@ -483,7 +546,7 @@ class Scanner {
 
     /**
      * Return true if the specified character is a digit (0-9); false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -495,7 +558,7 @@ class Scanner {
 
     /**
      * Return true if the specified character is a whitespace; false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -515,7 +578,7 @@ class Scanner {
     /**
      * Return true if the specified character can start an identifier name;
      * false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -528,7 +591,7 @@ class Scanner {
     /**
      * Return true if the specified character can be part of an identifier name;
      * false otherwise.
-     * 
+     *
      * @param c
      *            character.
      * @return true or false.
@@ -540,7 +603,7 @@ class Scanner {
 
     /**
      * Has an error occurred up to now in lexical analysis?
-     * 
+     *
      * @return true or false.
      */
 
@@ -550,7 +613,7 @@ class Scanner {
 
     /**
      * The name of the source file.
-     * 
+     *
      * @return name of the source file.
      */
 
@@ -579,7 +642,7 @@ class CharReader {
 
     /**
      * Construct a CharReader from a file name.
-     * 
+     *
      * @param fileName
      *            the name of the input file.
      * @exception FileNotFoundException
@@ -593,7 +656,7 @@ class CharReader {
 
     /**
      * Scan the next character.
-     * 
+     *
      * @return the character scanned.
      * @exception IOException
      *                if an I/O error occurs.
@@ -605,7 +668,7 @@ class CharReader {
 
     /**
      * The current line number in the source file, starting at 1.
-     * 
+     *
      * @return the current line number.
      */
 
@@ -616,7 +679,7 @@ class CharReader {
 
     /**
      * Return the file name.
-     * 
+     *
      * @return the file name.
      */
 
@@ -626,7 +689,7 @@ class CharReader {
 
     /**
      * Close the file.
-     * 
+     *
      * @exception IOException
      *                if an I/O error occurs.
      */
