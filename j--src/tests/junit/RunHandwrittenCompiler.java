@@ -22,7 +22,9 @@ public class RunHandwrittenCompiler {
 	private static void compile(File dst, File src) {
 		if (src.isDirectory()) {
 			for (File file : src.listFiles()) {
-				compile(dst, file);
+				if (!file.getName().contains("step")) {
+					compile(dst, file);
+				}
 			}
 		}
 		else if (src.isFile() && src.getName().endsWith(".java")) {

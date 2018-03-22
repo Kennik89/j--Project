@@ -147,6 +147,7 @@ class Scanner {
                 		}
                 	}
                 } else if (ch == '=') {
+                    nextCh();
                     return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
@@ -175,9 +176,6 @@ class Scanner {
         case ']':
             nextCh();
             return new TokenInfo(RBRACK, line);
-        case ':':
-            nextCh();
-            return new TokenInfo(COLON, line);
         case ';':
             nextCh();
             return new TokenInfo(SEMI, line);

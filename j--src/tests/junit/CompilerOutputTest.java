@@ -18,10 +18,12 @@ public class CompilerOutputTest {
 		suite.addTestSuite(InclusiveOrTest.class);
 		suite.addTestSuite(LeftShiftTest.class);
 		suite.addTestSuite(LogicalRightShiftTest.class);
+		suite.addTestSuite(MultiplyTest.class);
 		suite.addTestSuite(NotTest.class);
 		suite.addTestSuite(RemainderTest.class);
 		suite.addTestSuite(RightShiftTest.class);
 		suite.addTestSuite(SeriesTest.class);
+		suite.addTestSuite(SubtractTest.class);
 		suite.addTestSuite(UnaryPlusTest.class);
 		//$JUnit-END$
 		return suite;
