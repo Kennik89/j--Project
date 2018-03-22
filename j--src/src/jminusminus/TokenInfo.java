@@ -5,7 +5,7 @@ package jminusminus;
 /**
  * An enum of token kinds. Each entry in this enum represents the kind of a
  * token along with its image (string representation).
- * 
+ *
  * When you add a new token to the scanner, you must also add an entry to this
  * enum specifying the kind and image of the new token.
  */
@@ -24,7 +24,7 @@ enum TokenKind {
             "<INT_LITERAL>"), CHAR_LITERAL("<CHAR_LITERAL>"), STRING_LITERAL(
             "<STRING_LITERAL>"), ASL("<<"), ASR(">>"), LSR(">>>"), BNOT("~"), BIOR("|"), BXOR("^"), BAND("&"),
 
-    			BREAK("break"), BYTE("byte"), CASE("case"), CATCH("catch"),
+    		BREAK("break"), BYTE("byte"), CASE("case"), CATCH("catch"),
 		    CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"), FINAL("final"),
 		    FINALLY("finally"), FLOAT("float"), INTERFACE("interface"), FOR("for"), LONG("long"),
 		    GOTO("goto"), NATIVE("native"), IMPLEMENTS("implements"),
@@ -41,7 +41,7 @@ enum TokenKind {
 
     /**
      * Construct an instance TokenKind given its string representation.
-     * 
+     *
      * @param image
      *            string representation of the token.
      */
@@ -52,7 +52,7 @@ enum TokenKind {
 
     /**
      * Return the image of the token.
-     * 
+     *
      * @return the token's image.
      */
 
@@ -62,7 +62,7 @@ enum TokenKind {
 
     /**
      * Return the string representation of the token.
-     * 
+     *
      * @return the token's string representation.
      */
 
@@ -98,7 +98,7 @@ class TokenInfo {
     /**
      * Construct a TokenInfo from its kind, the semantic text forming the token,
      * and its line number.
-     * 
+     *
      * @param kind
      *            the token's kind.
      * @param image
@@ -116,7 +116,7 @@ class TokenInfo {
     /**
      * Construct a TokenInfo from its kind, and its line number. Its image is
      * simply its string representation.
-     * 
+     *
      * @param kind
      *            the token's identifying number.
      * @param line
@@ -129,7 +129,7 @@ class TokenInfo {
 
     /**
      * Return the token's string representation.
-     * 
+     *
      * @return the string representation.
      */
 
@@ -139,7 +139,7 @@ class TokenInfo {
 
     /**
      * Return the semantic text associated with the token.
-     * 
+     *
      * @return the semantic text.
      */
 
@@ -149,7 +149,7 @@ class TokenInfo {
 
     /**
      * Return the line number associated with the token.
-     * 
+     *
      * @return the line number.
      */
 
@@ -159,7 +159,7 @@ class TokenInfo {
 
     /**
      * Return the token's kind.
-     * 
+     *
      * @return the kind.
      */
 
@@ -169,7 +169,7 @@ class TokenInfo {
 
     /**
      * Return the token's image.
-     * 
+     *
      * @return the image.
      */
 
