@@ -1183,6 +1183,10 @@ private JExpression expression(): {
  *       conditionalAndExpression // level 13
  *           [( ASSIGN  // conditionalExpression
  *            | PLUS_ASSIGN // must be valid lhs
+ *            | MINUS_ASSIGN // must be valid lhs
+ *            | STAR_ASSIGN // must be valid lhs
+ *            | DIV_ASSIGN // must be valid lhs
+ *            | REM_ASSIGN // must be valid lhs
  *            )
  *            assignmentExpression]
  * </pre>
@@ -1203,7 +1207,19 @@ private JExpression assignmentExpression(): {
             { lhs = new JAssignOp( line, lhs, rhs ); } |
             <PLUS_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JPlusAssignOp( line, lhs, rhs ); }
+            { lhs = new JPlusAssignOp( line, lhs, rhs ); } |
+            <MINUS_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JSubtractAssignOp( line, lhs, rhs ); } |
+            <STAR_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JMultiplyAssignOp( line, lhs, rhs ); } |
+            <DIV_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JDivideAssignOp( line, lhs, rhs ); } |
+            <REM_ASSIGN>
+            rhs = assignmentExpression()
+            { lhs = new JRemainderAssignOp( line, lhs, rhs ); }
         ]
     } 
     catch ( ParseException e ) { 
