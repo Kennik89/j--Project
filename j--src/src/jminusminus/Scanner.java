@@ -132,6 +132,7 @@ class Scanner {
                     while (ch != '\n' && ch != EOFCH) {
                         nextCh();
                     }
+<<<<<<< Updated upstream
                 } else if (ch == '*')	{ // Multiline comment
                 	nextCh();
                 	while (true)	{
@@ -148,6 +149,16 @@ class Scanner {
                 	}
                 } else if (ch == '=') {
                     return new TokenInfo(DIV_ASSIGN, line);
+=======
+                } else if (ch == '*')	{
+                	while (true)	{
+	                	while ( ch != '*' && ch != EOFCH)	{
+	                		nextCh();
+	                	}
+	                	if( ch == '/' || ch == EOFCH)
+	                		break;
+                	}
+>>>>>>> Stashed changes
                 } else {
                     return new TokenInfo(DIV, line);
                 }
