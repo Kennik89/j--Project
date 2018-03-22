@@ -24,17 +24,17 @@ enum TokenKind {
             "<INT_LITERAL>"), CHAR_LITERAL("<CHAR_LITERAL>"), STRING_LITERAL(
             "<STRING_LITERAL>"), ASL("<<"), ASR(">>"), LSR(">>>"), BNOT("~"), BIOR("|"), BXOR("^"), BAND("&"),
 
-    		BREAK("break"), BYTE("byte"), CASE("case"), CATCH("catch"),
-		    CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"), FINAL("final"),
-		    FINALLY("finally"), FLOAT("float"), INTERFACE("interface"), FOR("for"), LONG("long"),
-		    GOTO("goto"), NATIVE("native"), IMPLEMENTS("implements"),
-		    SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
-		    THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), VOLATILE("volatile"),
+            BREAK("break"), BYTE("byte"), CASE("case"), CATCH("catch"),
+            CONST("const"), CONTINUE("continue"), DEFAULT("default"), DO("do"), DOUBLE("double"), FINAL("final"),
+            FINALLY("finally"), FLOAT("float"), INTERFACE("interface"), FOR("for"), LONG("long"),
+            GOTO("goto"), NATIVE("native"), IMPLEMENTS("implements"),
+            SHORT("short"), STRICTFP("strictfp"), SWITCH("switch"), SYNCHRONIZED("synchronized"),
+            THROW("throw"), THROWS("throws"), TRANSIENT("transient"), TRY("try"), VOLATILE("volatile"),
 
-		    QM("?"), LNOT_EQUAL("!="), GE(">="), LT("<"), LOR("||"), COLON(":"),
-		    DIV_ASSIGN("/="), MINUS_ASSIGN("-="), STAR_ASSIGN("*="), REM_ASSIGN("%="),
-		    ASR_ASSIGN(">>="), LSR_ASSIGN(">>>="), ASL_ASSIGN("<<="),
-		    BXOR_ASSIGN("^="), BIOR_ASSIGN("|="), BAND_ASSIGN("&=");
+            QM("?"), LNOT_EQUAL("!="), GE(">="), LT("<"), LOR("||"), COLON(":"),
+            DIV_ASSIGN("/="), MINUS_ASSIGN("-="), STAR_ASSIGN("*="), REM_ASSIGN("%="),
+            ASR_ASSIGN(">>="), LSR_ASSIGN(">>>="), ASL_ASSIGN("<<="),
+            BXOR_ASSIGN("^="), BIOR_ASSIGN("|="), BAND_ASSIGN("&=");
 
     /** The token's string representation. */
     private String image;
