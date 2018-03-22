@@ -147,6 +147,7 @@ class Scanner {
                 		}
                 	}
                 } else if (ch == '=') {
+                    nextCh();
                     return new TokenInfo(DIV_ASSIGN, line);
                 } else {
                     return new TokenInfo(DIV, line);
