@@ -397,10 +397,10 @@ class Scanner {
             nextCh();
             return new TokenInfo(BAND_ASSIGN, line);
 		} else if (ch == '&') {
-    			nextCh();
-    			return new TokenInfo(LAND, line);
+    		nextCh();
+    		return new TokenInfo(LAND, line);
 		} else {
-    			return new TokenInfo(BAND, line);
+    		return new TokenInfo(BAND, line);
 		}
 	}
 
@@ -432,7 +432,9 @@ class Scanner {
 		if (ch == '=') {
             nextCh();
             return new TokenInfo(BIOR_ASSIGN, line);
-		} else {
+		} else if (ch == '|') {
+            return new TokenInfo(LOR, line);
+        } else {
 			return new TokenInfo(BIOR, line);
 		}
 	}
