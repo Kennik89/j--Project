@@ -1034,6 +1034,7 @@ public class Parser {
         while (more) {
             if (have(LOR)) {
                 //lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+               // lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
             } else {
                 more = false;
             }
@@ -1544,7 +1545,7 @@ public class Parser {
      * Parse a literal.
      *
      * <pre>
-     *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL
+     *   literal ::= INT_LITERAL | DOUBLE_LITERAL | CHAR_LITERAL | STRING_LITERAL
      *             | TRUE        | FALSE        | NULL
      * </pre>
      *
@@ -1555,6 +1556,8 @@ public class Parser {
         int line = scanner.token().line();
         if (have(INT_LITERAL)) {
             return new JLiteralInt(line, scanner.previousToken().image());
+        }else if(have(DOUBLE_LITERAL)) {
+            return new JLiteralDouble(line,scanner.previousToken().image());
         } else if (have(CHAR_LITERAL)) {
             return new JLiteralChar(line, scanner.previousToken().image());
         } else if (have(STRING_LITERAL)) {
