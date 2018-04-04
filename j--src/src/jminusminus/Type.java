@@ -39,6 +39,8 @@ class Type {
     /** The primitive type, boolean. */
     public final static Type BOOLEAN = typeFor(boolean.class);
 
+    /**the primitive type, double, Jesper Rytter 4/4-2018**/
+    public final static Type DOUBLE = typeFor(double.class);
     /** java.lang.Integer. */
     public final static Type BOXED_INT = typeFor(java.lang.Integer.class);
 
