@@ -1033,7 +1033,7 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
-                lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+                //lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
             } else {
                 more = false;
             }
