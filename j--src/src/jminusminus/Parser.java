@@ -473,10 +473,10 @@ public class Parser {
     }
 
     /**
-     * Parse a class declaration.
+     * Parse a class/interface declaration.
      *
      * <pre>
-     *   classDeclaration ::= CLASS IDENTIFIER
+     *   classDeclaration ::= (CLASS | INTERFACE) IDENTIFIER
      *                        [EXTENDS qualifiedIdentifier]
      *                        classBody
      * </pre>
@@ -491,7 +491,11 @@ public class Parser {
 
     private JClassDeclaration classDeclaration(ArrayList<String> mods) {
         int line = scanner.token().line();
-        mustBe(CLASS);
+        if (see(CLASS))	{
+        	mustBe(CLASS);
+        } else {
+        	mustBe(INTERFACE);
+        }
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
         Type superClass;
@@ -998,7 +1002,7 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalAndExpression();
+        JExpression lhs = conditionalOrExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1033,7 +1037,7 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
-                //lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+                lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
             } else {
                 more = false;
             }

@@ -1,5 +1,6 @@
 package pass.step2;
 
-public class InterfaceDeclaration {
+public interface InterfaceDeclaration {
 
+	void foo(int x);
 }

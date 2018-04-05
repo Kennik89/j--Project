@@ -11,7 +11,7 @@ typeDeclaration ::= modifiers classDeclaration
 
 modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT}
 
-classDeclaration ::= CLASS IDENTIFIER
+classDeclaration ::= (CLASS | INTERFACE) IDENTIFIER
                        [EXTENDS qualifiedIdentifier]
                        classBody
 
@@ -69,7 +69,7 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= conditionalAndExpression  // must be a valid lhs
+assignmentExpression ::= conditionalOrExpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN | DIV_ASSIGN | REM_ASSIGN) assignmentExpression]
 
 conditionalOrExpression ::= conditionalAndExpression // level 11
