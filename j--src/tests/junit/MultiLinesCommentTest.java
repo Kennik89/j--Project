@@ -1,7 +1,7 @@
 package junit;
 
 import junit.framework.TestCase;
-import pass.MultiLinesComment;
+//import pass.MultiLinesComment;
 
 public class MultiLinesCommentTest extends TestCase {
 
@@ -17,7 +17,7 @@ public class MultiLinesCommentTest extends TestCase {
 		/*
 		assertFalse();
 		*/
-		assertTrue();
+		
 	}
 
 }
