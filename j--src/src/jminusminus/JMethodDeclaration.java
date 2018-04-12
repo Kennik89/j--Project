@@ -24,6 +24,9 @@ class JMethodDeclaration
     /** The formal parameters. */
     protected ArrayList<JFormalParameter> params;
 
+    /** The throws identifiers. */
+    protected ArrayList<TypeName> idents;
+
     /** Method body. */
     protected JBlock body;
 
@@ -58,13 +61,15 @@ class JMethodDeclaration
      *                return type.
      * @param params
      *                the formal parameters.
+     * @param idents
+     *                the throws identifiers.
      * @param body
      *                method body.
      */
 
     public JMethodDeclaration(int line, ArrayList<String> mods,
         String name, Type returnType,
-        ArrayList<JFormalParameter> params, JBlock body)
+        ArrayList<JFormalParameter> params, ArrayList<TypeName> idents, JBlock body)
 
     {
         super(line);
@@ -72,6 +77,7 @@ class JMethodDeclaration
         this.name = name;
         this.returnType = returnType;
         this.params = params;
+        this.idents = idents;
         this.body = body;
         this.isAbstract = mods.contains("abstract");
         this.isStatic = mods.contains("static");
@@ -243,6 +249,15 @@ class JMethodDeclaration
                 p.indentLeft();
             }
             p.println("</FormalParameters>");
+        }
+        if (idents != null) {
+            p.println("<ThrowsIdentifiers>");
+            p.indentRight();
+            for (TypeName ident : idents) {
+                p.printf("<ThrowsIdentifier type=\"%s\"/>\n", ident);
+            }
+            p.indentLeft();
+            p.println("</ThrowsIdentifiers>");
         }
         if (body != null) {
             p.println("<Body>");

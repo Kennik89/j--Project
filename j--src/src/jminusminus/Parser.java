@@ -555,9 +555,10 @@ public class Parser {
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
             ArrayList<JFormalParameter> params = formalParameters();
+            ArrayList<TypeName> idents = have(THROWS) ? throwsIdentifiers() : null;
             JBlock body = block();
             memberDecl = new JConstructorDeclaration(line, mods, name, params,
-                    body);
+                    idents, body);
         } else {
             Type type = null;
             if (have(VOID)) {
@@ -566,9 +567,10 @@ public class Parser {
                 mustBe(IDENTIFIER);
                 String name = scanner.previousToken().image();
                 ArrayList<JFormalParameter> params = formalParameters();
+                ArrayList<TypeName> idents = have(THROWS) ? throwsIdentifiers() : null;
                 JBlock body = have(SEMI) ? null : block();
                 memberDecl = new JMethodDeclaration(line, mods, name, type,
-                        params, body);
+                        params, idents, body);
             } else {
                 type = type();
                 if (seeIdentLParen()) {
@@ -576,9 +578,10 @@ public class Parser {
                     mustBe(IDENTIFIER);
                     String name = scanner.previousToken().image();
                     ArrayList<JFormalParameter> params = formalParameters();
+                    ArrayList<TypeName> idents = have(THROWS) ? throwsIdentifiers() : null;
                     JBlock body = have(SEMI) ? null : block();
                     memberDecl = new JMethodDeclaration(line, mods, name, type,
-                            params, body);
+                            params, idents, body);
                 } else {
                     // Field
                     memberDecl = new JFieldDeclaration(line, mods,
@@ -588,6 +591,27 @@ public class Parser {
             }
         }
         return memberDecl;
+    }
+
+    /**
+     * Parse throws identifiers.
+     * 
+     * <pre>
+     *   throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
+     * </pre>
+     * 
+     * @return a list of throws identifiers.
+     */
+
+    private ArrayList<TypeName> throwsIdentifiers() {
+        ArrayList<TypeName> identifiers = new ArrayList<TypeName>();
+        TypeName ident = qualifiedIdentifier();
+        identifiers.add(ident);
+        while (have(COMMA)) {
+            ident = qualifiedIdentifier();
+            identifiers.add(ident);
+        };
+        return identifiers;
     }
 
     /**
@@ -638,7 +662,10 @@ public class Parser {
      *               | IF parExpression statement [ELSE statement]
      *               | WHILE parExpression statement
      *               | RETURN [expression] SEMI
-     *               | SEMI
+     *               | THROW expression SEMI
+     *               | TRY block catchClause {catchClause}
+     *               | TRY block {catchClause} FINALLY block
+     *               | SEMI 
      *               | statementExpression SEMI
      * </pre>
      *
@@ -666,6 +693,22 @@ public class Parser {
                 mustBe(SEMI);
                 return new JReturnStatement(line, expr);
             }
+        } else if (have(THROW)) {
+            JExpression expr = expression();
+            mustBe(SEMI);
+            return new JThrowStatement(line, expr);
+        } else if (have(TRY)) {
+        	    JBlock tryBlock = block();
+        	    ArrayList<JCatchClause> catchClauses = new ArrayList<JCatchClause>();
+        	    JBlock finallyBlock = null;
+        	    while (have(CATCH)) {
+            	    JCatchClause catchClause = catchClause();
+            	    catchClauses.add(catchClause);
+        	    }
+        	    if (have(FINALLY)) {
+            	    finallyBlock = block();
+        	    }
+            return new JTryStatement(line, tryBlock, catchClauses, finallyBlock);
         } else if (have(SEMI)) {
             return new JEmptyStatement(line);
         } else { // Must be a statementExpression
@@ -673,6 +716,25 @@ public class Parser {
             mustBe(SEMI);
             return statement;
         }
+    }
+
+    /**
+     * Parse catch clause.
+     * 
+     * <pre>
+     *   catchClause ::= LPAREN formalParameter RPAREN block
+     * </pre>
+     * 
+     * @return a catch clause.
+     */
+
+    private JCatchClause catchClause() {
+        int line = scanner.token().line();
+        mustBe(LPAREN);
+        	JFormalParameter parameter = formalParameter();
+        mustBe(RPAREN);
+	    JBlock block = block();
+        return new JCatchClause(line, parameter, block);
     }
 
     /**
