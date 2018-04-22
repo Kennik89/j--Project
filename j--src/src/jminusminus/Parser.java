@@ -1040,7 +1040,10 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
+<<<<<<< HEAD
                 //lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+=======
+>>>>>>> branch 'AddDouble' of https://github.com/Kennik89/j--Project.git
                // lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
             } else {
                 more = false;
