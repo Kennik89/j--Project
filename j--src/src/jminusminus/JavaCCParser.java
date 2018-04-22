@@ -1590,8 +1590,7 @@ class JavaCCParser implements JavaCCParserConstants {
           break label_22;
         }
         jj_consume_token(DEC);
-              primaryExpr =
-                new JPostDecrementOp( line, primaryExpr );
+              primaryExpr = new JPostDecrementOp( line, primaryExpr );
       }
     } catch (ParseException e) {
         recoverFromError( new int[] { SEMI, EOF }, e );

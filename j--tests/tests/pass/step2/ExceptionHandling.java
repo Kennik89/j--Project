@@ -1,4 +1,4 @@
-package pass.step2;
+/*package pass.step2;
 
 public class ExceptionHandling {
 	
@@ -20,3 +20,4 @@ public class ExceptionHandling {
 	}
 
 }
+*/

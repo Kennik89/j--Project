@@ -1,4 +1,4 @@
-package pass.step2;
+/*package pass.step2;
 
 public class AssignmentOperators {
 	
@@ -12,4 +12,4 @@ public class AssignmentOperators {
 		return y;
 	}
 
-}
+}*/

@@ -1057,7 +1057,7 @@ public class Parser {
      *
      * @return an AST for an assignmentExpression.
      */
-
+    //Add support for inc/dec => Assignment
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
         JExpression lhs = conditionalAndExpression();
@@ -1339,7 +1339,7 @@ public class Parser {
             }
             else if (have(REM)) {
                 lhs = new JRemainderOp(line, lhs, unaryExpression());
-            } else {
+            }else {
                 more = false;
             }
         }
@@ -1359,12 +1359,14 @@ public class Parser {
      *
      * @return an AST for an unaryExpression.
      */
-
+    //TODO : Logic for Predec/postinc/postdec
     private JExpression unaryExpression() {
         int line = scanner.token().line();
         if (have(INC)) {
             return new JPreIncrementOp(line, unaryExpression());
-        } else if (have(MINUS)) {
+        } /*else if(have(DEC)){
+        	return new JPreDecrementOp(line, unaryExpression());
+        }*/ else if (have(MINUS)) {
             return new JNegateOp(line, unaryExpression());
         } else if (have(PLUS)) {
             return new JPositiveOp(line, unaryExpression());
@@ -1426,6 +1428,10 @@ public class Parser {
         }
         while (have(DEC)) {
             primaryExpr = new JPostDecrementOp(line, primaryExpr);
+        }
+        
+        while(have(INC)) {
+        	primaryExpr = new JPostIncrementOp(line, primaryExpr);
         }
         return primaryExpr;
     }
