@@ -20,7 +20,7 @@ public class Parser {
     /** Whether a parser error has been found. */
     private boolean isInError;
 
-    /** Wheter we have recovered from a parser error. */
+    /** Whether we have recovered from a parser error. */
     private boolean isRecovered;
 
     /**
@@ -1052,7 +1052,7 @@ public class Parser {
      *
      * <pre>
      *   assignmentExpression ::=
-     *       conditionalAndExpression // level 13
+     *       conditionalOrExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
      *            )
