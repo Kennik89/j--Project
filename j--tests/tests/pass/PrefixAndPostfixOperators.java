@@ -1,7 +1,6 @@
 package pass;
 
 import java.lang.System;
-import java.lang.Integer;
 
 public class PrefixAndPostfixOperators {
 	
@@ -43,7 +42,7 @@ public class PrefixAndPostfixOperators {
     	int y = 2;
     	
     	PrefixAndPostfixOperators pp = new PrefixAndPostfixOperators();
-        // TODO: add logic for print inc/dec postfix/prefix
+    	
         int[] predec = pp.PrefixDec(x, y);
         int[] preinc = pp.PrefixInc(x, y);
         int[] postdec = pp.PostfixDec(x, y);
