@@ -594,7 +594,7 @@ class JPreDecrementOp extends JUnaryExpression {
             ((JLhs) arg).codegenLoadLhsLvalue(output);
             ((JLhs) arg).codegenLoadLhsRvalue(output);
             output.addNoArgInstruction(ICONST_1);
-            output.addNoArgInstruction(IADD);
+            output.addNoArgInstruction(ISUB);
             if (!isStatementExpression) {
                 // Loading its original rvalue
                 ((JLhs) arg).codegenDuplicateRvalue(output);
