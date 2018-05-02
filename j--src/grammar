@@ -33,6 +33,7 @@ blockStatement ::= localVariableDeclarationStatement
 
 statement ::= block
             | IF parExpression statement [ELSE statement]
+            | for ([forInit] ; [expression] ; [forUpdate] ) statement
             | WHILE parExpression statement
             | RETURN [expression] SEMI
             | THROW expression SEMI
@@ -40,6 +41,8 @@ statement ::= block
             | TRY block {CATCH catchClause} FINALLY block
             | SEMI 
             | statementExpression SEMI
+
+forInit ::= statementExpression {COMMA statementExpression} | [final] type variableDeclarators
 
 catchClause ::= LPAREN formalParameter RPAREN block
 
