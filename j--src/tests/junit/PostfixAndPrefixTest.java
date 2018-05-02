@@ -4,8 +4,8 @@ import pass.PrefixAndPostfixOperators;
 
 public class PostfixAndPrefixTest extends TestCase {
 	private PrefixAndPostfixOperators prepostfix;
-	private int x = 5;
-	private int y = 2;
+	private int x = 2;
+	private int y = 5;
 	
 	protected void setUp() throws Exception{	
 		super.setUp();
@@ -22,7 +22,7 @@ public class PostfixAndPrefixTest extends TestCase {
 		System.out.println(x + " " + y);
 		assertEquals(XandY_postfixinc[0], 5);
 		assertEquals(XandY_postfixinc[1], 6);
-		assertEquals(XandY_postfixdec[1], 5);
+		assertEquals(XandY_postfixdec[0], 5);
 		assertEquals(XandY_postfixdec[1], 4);
 		
 	}
@@ -33,7 +33,7 @@ public class PostfixAndPrefixTest extends TestCase {
 		
 		assertEquals(XandY_prefixinc[0], 6);
 		assertEquals(XandY_prefixinc[1], 6);
-		assertEquals(XandY_prefixdec[1], 4);
+		assertEquals(XandY_prefixdec[0], 4);
 		assertEquals(XandY_prefixdec[1], 4);
 
 	}
