@@ -33,7 +33,7 @@ blockStatement ::= localVariableDeclarationStatement
 
 statement ::= block
             | IF parExpression statement [ELSE statement]
-            | for ([forInit] ; [expression] ; [forUpdate] ) statement
+            | FOR ([forInit] ; [expression] ; [forUpdate] ) statement
             | WHILE parExpression statement
             | RETURN [expression] SEMI
             | THROW expression SEMI
