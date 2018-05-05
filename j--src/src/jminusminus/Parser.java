@@ -20,7 +20,7 @@ public class Parser {
     /** Whether a parser error has been found. */
     private boolean isInError;
 
-    /** Wheter we have recovered from a parser error. */
+    /** Whether we have recovered from a parser error. */
     private boolean isRecovered;
 
     /**
@@ -46,6 +46,7 @@ public class Parser {
     public boolean errorHasOccurred() {
         return isInError;
     }
+
 
     // ////////////////////////////////////////////////
     // Parsing Support ///////////////////////////////
@@ -598,11 +599,11 @@ public class Parser {
 
     /**
      * Parse throws identifiers.
-     * 
+     *
      * <pre>
      *   throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
      * </pre>
-     * 
+     *
      * @return a list of throws identifiers.
      */
 
@@ -668,7 +669,7 @@ public class Parser {
      *               | THROW expression SEMI
      *               | TRY block catchClause {catchClause}
      *               | TRY block {catchClause} FINALLY block
-     *               | SEMI 
+     *               | SEMI
      *               | statementExpression SEMI
      * </pre>
      *
@@ -723,11 +724,11 @@ public class Parser {
 
     /**
      * Parse catch clause.
-     * 
+     *
      * <pre>
      *   catchClause ::= LPAREN formalParameter RPAREN block
      * </pre>
-     * 
+     *
      * @return a catch clause.
      */
 
@@ -1055,7 +1056,7 @@ public class Parser {
      *
      * <pre>
      *   assignmentExpression ::=
-     *       conditionalAndExpression // level 13
+     *       conditionalOrExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
      *            )
