@@ -41,6 +41,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
     /** Static (class) fields of this class. */
     private ArrayList<JFieldDeclaration> staticFieldInitializations;
 
+	/** Determine whether this file is a class or interface file */
+    private boolean isClass;
+
     /**
      * Construct an AST node for a class declaration given the line number, list
      * of class modifiers, name of the class, its super class type, and the
@@ -50,6 +53,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      *            line in which the class declaration occurs in the source file.
      * @param mods
      *            class modifiers.
+     * @param isClass 
      * @param name
      *            class name.
      * @param superType
@@ -58,10 +62,11 @@ class JClassDeclaration extends JAST implements JTypeDecl {
      *            class block.
      */
 
-    public JClassDeclaration(int line, ArrayList<String> mods, String name,
+    public JClassDeclaration(int line, ArrayList<String> mods, boolean isClass, String name,
             Type superType, ArrayList<JMember> classBlock) {
         super(line);
         this.mods = mods;
+        this.isClass = isClass;
         this.name = name;
         this.superType = superType;
         this.classBlock = classBlock;
@@ -215,8 +220,8 @@ class JClassDeclaration extends JAST implements JTypeDecl {
 
         // Finally, ensure that a non-abstract class has
         // no abstract methods.
+        String methods = "";
         if (!thisType.isAbstract() && thisType.abstractMethods().size() > 0) {
-            String methods = "";
             for (Method method : thisType.abstractMethods()) {
                 methods += "\n" + method;
             }
@@ -224,6 +229,13 @@ class JClassDeclaration extends JAST implements JTypeDecl {
                     "Class must be declared abstract since it defines "
                             + "the following abstract methods: %s", methods);
 
+        } else if (!isClass && thisType.declaredConcreteMethods().size() > 0)	{
+        	for (Method method : thisType.declaredConcreteMethods()) {
+                methods += "\n" + method;
+            }
+            JAST.compilationUnit.reportSemanticError(line,
+                    "Interface must be declared concrete since it defines "
+                            + "the following concrete methods: %s", methods);
         }
         return this;
     }

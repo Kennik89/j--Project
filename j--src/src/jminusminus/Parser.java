@@ -491,10 +491,13 @@ public class Parser {
 
     private JClassDeclaration classDeclaration(ArrayList<String> mods) {
         int line = scanner.token().line();
+        boolean isClass;
         if (see(CLASS))	{
         	mustBe(CLASS);
+        	isClass = true;
         } else {
         	mustBe(INTERFACE);
+        	isClass = false;
         }
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
@@ -504,7 +507,7 @@ public class Parser {
         } else {
             superClass = Type.OBJECT;
         }
-        return new JClassDeclaration(line, mods, name, superClass, classBody());
+        return new JClassDeclaration(line, mods, isClass, name, superClass, classBody());
     }
 
     /**
@@ -539,7 +542,7 @@ public class Parser {
      *                | (VOID | type) IDENTIFIER  // method
      *                    formalParameters
      *                    (block | SEMI)
-     *                | type variableDeclarators SEMI
+     *                | type variableDeclarators SEMI // field
      * </pre>
      *
      * @param mods

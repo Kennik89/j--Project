@@ -277,7 +277,7 @@ class Type {
      * @return a list of declared concrete methods.
      */
 
-    private ArrayList<Method> declaredConcreteMethods() {
+    public ArrayList<Method> declaredConcreteMethods() { // Changed from private to public
         ArrayList<Method> declaredConcreteMethods = new ArrayList<Method>();
         for (java.lang.reflect.Method method : classRep.getDeclaredMethods()) {
             if (!Modifier.isAbstract(method.getModifiers())) {
