@@ -493,7 +493,7 @@ public class Parser {
     private JClassDeclaration classDeclaration(ArrayList<String> mods) {
         int line = scanner.token().line();
         boolean isClass;
-        if (have(CLASS))	{	
+        if (have(CLASS))	{
         	isClass = true;
         } else {
         	mustBe(INTERFACE);
@@ -1254,7 +1254,12 @@ public class Parser {
             return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LE)) {
             return new JLessEqualOp(line, lhs, shiftExpression());
-        } else if (have(INSTANCEOF)) {
+        } else if (have(GE)) {
+        	return new JGreaterEqualOp(line, lhs, shiftExpression());
+        } else if (have(LT)) {
+        	return new JLessOp(line, lhs, shiftExpression());
+        }
+          else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
             return lhs;
