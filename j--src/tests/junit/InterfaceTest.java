@@ -2,27 +2,20 @@ package junit;
 
 import junit.framework.TestCase;
 
-public class MultiLinesCommentTest extends TestCase {
-
+public class InterfaceTest extends TestCase {
+	//private Interface ife;
+	
 	protected void setUp() throws Exception {
 		super.setUp();
+//		division = new Division();
 	}
-
+	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
-
-	public void testMultiLinesCommentTest() {
-		/*
-		 * 
-		/* 
-		assertFalse();
-		* /
-		*/
-		assertTrue(true);
-		/*
-		 * 
-		 */
+	
+	public void testDivide() {
+//		this.assertEquals(division.divide(0, 42), 0);
 	}
 
 }

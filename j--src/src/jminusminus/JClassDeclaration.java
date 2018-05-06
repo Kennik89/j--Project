@@ -255,7 +255,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         output.addClass(mods, qualifiedName, superType.jvmName(), null, false);
 
         // The implicit empty constructor?
-        if (!hasExplicitConstructor) {
+        if (isClass && !hasExplicitConstructor) {
             codegenImplicitConstructor(output);
         }
 

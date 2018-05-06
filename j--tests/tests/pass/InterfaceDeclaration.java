@@ -1,4 +1,4 @@
-package pass.step2;
+package pass;
 
 public interface InterfaceDeclaration {
 

@@ -2,6 +2,7 @@ package junit;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import pass.Remainder;
 
 public class CompilerOutputTest {
 
@@ -25,6 +26,10 @@ public class CompilerOutputTest {
 		suite.addTestSuite(SeriesTest.class);
 		suite.addTestSuite(SubtractTest.class);
 		suite.addTestSuite(UnaryPlusTest.class);
+		
+		suite.addTestSuite(MultiLinesCommentTest.class);
+		suite.addTestSuite(RemainderTest.class);
+		suite.addTestSuite(InterfaceTest.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -493,8 +493,7 @@ public class Parser {
     private JClassDeclaration classDeclaration(ArrayList<String> mods) {
         int line = scanner.token().line();
         boolean isClass;
-        if (see(CLASS))	{
-        	mustBe(CLASS);
+        if (have(CLASS))	{	
         	isClass = true;
         } else {
         	mustBe(INTERFACE);
