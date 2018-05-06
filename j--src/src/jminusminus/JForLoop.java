@@ -40,6 +40,9 @@ public class JForLoop extends JStatement {
     		error_printer("For_Condition: Expected to find Boolean but did not");
 
     	incrementer = (JStatementExpression) incrementer.analyze(context);
+    	Type inct = incrementer.expr.type();
+    	System.out.println(inct);
+    	
     	if(!(incrementer.expr.type() == Type.INT))
     		error_printer("For_Incrementer: Expected to find INT but did not");
     	

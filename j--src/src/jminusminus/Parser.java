@@ -690,10 +690,11 @@ public class Parser {
 			mustBe(SEMI);
 			JExpression condition = expression();
 			PrettyPrinter p = new PrettyPrinter();
-			System.out.println("HERE -------------------- ");
-			condition.writeToStdOut(p);
+			//condition.writeToStdOut(p);
 			mustBe(SEMI);
+			System.out.println("HERE -------------------- ");
 			JStatementExpression incrementer = new JStatementExpression(line, expression());
+			incrementer.writeToStdOut(p);
 			mustBe(RPAREN);
 			JStatement body = statement();
 			return new JForLoop(line, for_decl, condition, incrementer, body);
@@ -1029,6 +1030,7 @@ public class Parser {
 	 * @return an AST for a statementExpression.
 	 */
 
+	// Add JPostfixExpression ?
 	private JStatement statementExpression() {
 		int line = scanner.token().line();
 		JExpression expr = expression();
@@ -1267,7 +1269,11 @@ public class Parser {
 			return new JGreaterThanOp(line, lhs, shiftExpression());
 		} else if (have(LE)) {
 			return new JLessEqualOp(line, lhs, shiftExpression());
-		} else if (have(INSTANCEOF)) {
+		} else if (have(GE)) {
+        	return new JGreaterEqualOp(line, lhs, shiftExpression());
+        } else if (have(LT)) {
+        	return new JLessOp(line, lhs, shiftExpression());
+        } else if (have(INSTANCEOF)) {
 			return new JInstanceOfOp(line, lhs, referenceType());
 		} else {
 			return lhs;
