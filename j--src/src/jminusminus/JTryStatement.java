@@ -2,6 +2,10 @@
 
 package jminusminus;
 
+import static jminusminus.CLConstants.ALOAD;
+import static jminusminus.CLConstants.ASTORE;
+import static jminusminus.CLConstants.ATHROW;
+
 import java.util.ArrayList;
 
 /**
@@ -18,6 +22,12 @@ class JTryStatement extends JStatement {
 
     /** Finally block. */
     private JBlock finallyBlock;
+
+    /**
+     * The new context and offset (built in analyze()) for the throw on part.
+     */
+    private LocalContext context;
+    private int nextOffset;
 
     /**
      * Construct an AST node for a try-statement given its line number,
@@ -48,13 +58,23 @@ class JTryStatement extends JStatement {
      */
 
     public JStatement analyze(Context context) {
-		// TODO
-//        condition = (JExpression) condition.analyze(context);
-//        condition.type().mustMatchExpected(line(), Type.BOOLEAN);
-//        thenPart = (JStatement) thenPart.analyze(context);
-//        if (elsePart != null) {
-//            elsePart = (JStatement) elsePart.analyze(context);
-//        }
+        tryBlock = tryBlock.analyze(context);
+        boolean hasCatch = false;
+        if (catchClauses != null) {
+            for (JCatchClause catchClause : catchClauses) {
+                catchClause.analyze(context);
+                hasCatch = true;
+            }
+        }
+        if (finallyBlock != null) {
+            finallyBlock = finallyBlock.analyze(context);
+        }
+        else if (!hasCatch) {
+            JAST.compilationUnit.reportSemanticError(line(),
+                    "Try statement with no finally statement must have at least one catch clause");
+        }
+        this.context = new LocalContext(context);
+        this.nextOffset = this.context.nextOffset();
         return this;
     }
 
@@ -65,7 +85,45 @@ class JTryStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
-    		// TODO
+        String tryBegin = "tryBegin_" + line();
+        String tryEnd = "tryEnd_" + line();
+        String finallyBegin = "finallyBegin_" + line();
+        String finallyEnd = "finallyEnd_" + line();
+        output.addLabel(tryBegin);
+        tryBlock.codegen(output);
+        output.addLabel(tryEnd);
+        if (finallyBlock != null) {
+            finallyBlock.codegen(output);
+        }
+        output.addBranchInstruction(CLConstants.GOTO, finallyEnd);
+        
+        if (catchClauses != null) {
+            int index = 1;
+            for (JCatchClause catchClause : catchClauses) {
+                String catchBegin = "catchBegin_" + line() + "_" + catchClause.param().type().simpleName() + "_" + index;
+                String catchEnd = "catchEnd_" + line() + "_" + catchClause.param().type().simpleName() + "_" + index;
+                index++;
+                output.addLabel(catchBegin);
+                catchClause.codegen(output);
+                output.addLabel(catchEnd);
+                if (finallyBlock != null) {
+                    finallyBlock.codegen(output);
+                }
+                output.addBranchInstruction(CLConstants.GOTO, finallyEnd);
+                output.addExceptionHandler(tryBegin, tryEnd, catchBegin, catchClause.type().jvmName());
+                output.addExceptionHandler(catchBegin, catchEnd, finallyBegin, null);
+            }
+        }
+
+        output.addLabel(finallyBegin);
+        output.addOneArgInstruction(ASTORE, this.nextOffset);
+        if (finallyBlock != null) {
+            finallyBlock.codegen(output);
+        }
+        output.addOneArgInstruction(ALOAD, this.nextOffset);
+        output.addNoArgInstruction(ATHROW);
+        output.addExceptionHandler(tryBegin, tryEnd, finallyBegin, null);
+        output.addLabel(finallyEnd);
     }
 
     /**

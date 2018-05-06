@@ -51,6 +51,9 @@ class Type {
     /** The type java.lang.String. */
     public static Type STRING = typeFor(java.lang.String.class);
 
+    /** The type java.lang.Throwable. */
+    public static Type THROWABLE = typeFor(java.lang.Throwable.class);
+
     /** The type java.lang.Object. */
     public static Type OBJECT = typeFor(java.lang.Object.class);
 

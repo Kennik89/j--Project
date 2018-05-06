@@ -11,6 +11,7 @@ public class CompilerOutputTest {
 		suite.addTestSuite(AndTest.class);
 		suite.addTestSuite(ClassesTest.class);
 		suite.addTestSuite(DivisionTest.class);
+		suite.addTestSuite(ExceptionHandlingTest.class);
 		suite.addTestSuite(ExclusiveOrTest.class);
 		suite.addTestSuite(FactorialTest.class);
 		suite.addTestSuite(GCDTest.class);

@@ -572,6 +572,7 @@ private JMember memberDecl( ArrayList<String>  mods ): {
     Type type = null;
     String name = "";
     ArrayList<JFormalParameter> params = null;
+    ArrayList<TypeName> idents = null;
     JBlock body = null;
     ArrayList<JVariableDeclarator> variableDeclarators = null;
     JMember memberDecl = null;
@@ -586,11 +587,15 @@ private JMember memberDecl( ArrayList<String>  mods ): {
                 name = token.image; 
             } 
             params = formalParameters() 
+            [
+                <THROWS>
+                idents = throwsIdentifiers()
+            ]
             body = block()
             { 
                 memberDecl = 
                 new JConstructorDeclaration( line, mods, 
-                                             name, params, null, body );
+                                             name, params, idents, body );
             }
         ) |     
         LOOKAHEAD( ( <VOID> | type() ) <IDENTIFIER> <LPAREN> )
@@ -602,6 +607,10 @@ private JMember memberDecl( ArrayList<String>  mods ): {
             { line = token.beginLine; }
             <IDENTIFIER> { name = token.image; } 
             params = formalParameters() 
+            [
+                <THROWS>
+                idents = throwsIdentifiers()
+            ]
             ( 
                 body = block() | 
                 <SEMI> 
@@ -609,7 +618,7 @@ private JMember memberDecl( ArrayList<String>  mods ): {
             { 
                 memberDecl = 
                    new JMethodDeclaration( line, mods, name, 
-                                           type, params, null, body ); 
+                                           type, params, idents, body ); 
             } 
         ) | 
         ( 
@@ -626,6 +635,37 @@ private JMember memberDecl( ArrayList<String>  mods ): {
         recoverFromError( new int[] { SEMI, EOF }, e ); 
     }
     { return memberDecl; }
+}
+
+/**
+ * Parse throws identifiers.
+ * 
+ * <pre>
+ *   throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
+ * </pre>
+ * 
+ * @return a list of throws identifiers.
+ */
+
+private ArrayList<TypeName> throwsIdentifiers(): {
+    ArrayList<TypeName> identifiers = new ArrayList<TypeName>();
+    TypeName ident = null;
+}
+{
+    try {
+        [ 
+            ident = qualifiedIdentifier()
+            { identifiers.add( ident ); }
+            ( 
+                <COMMA> ident = qualifiedIdentifier()
+                { identifiers.add( ident ); }
+            )* 
+        ]
+    } 
+    catch ( ParseException e ) { 
+        recoverFromError( new int[] { SEMI, EOF }, e ); 
+    }
+    { return identifiers; }
 }
 
 /**
@@ -692,6 +732,9 @@ private JStatement blockStatement(): {
  *               | IF parExpression statement [ELSE statement]
  *               | WHILE parExpression statement 
  *               | RETURN [expression] SEMI
+ *               | THROW expression SEMI
+ *               | TRY block catchClause {catchClause}
+ *               | TRY block {catchClause} FINALLY block
  *               | SEMI 
  *               | statementExpression SEMI
  * </pre>
@@ -707,6 +750,10 @@ private JStatement statement(): {
     JStatement alternate = null;
     JStatement body = null;
     JExpression expr = null;
+    JBlock tryBlock = null;
+    JCatchClause catchClause = null;
+    ArrayList<JCatchClause> catchClauses = new ArrayList<JCatchClause>();
+    JBlock finallyBlock = null;
 }
 {       
     try {
@@ -735,6 +782,22 @@ private JStatement statement(): {
         ] 
         <SEMI>
         { statement = new JReturnStatement( line, expr ); } |
+        <THROW> { line = token.beginLine; }
+        expr = expression() 
+        <SEMI>
+        { statement = new JThrowStatement( line, expr ); } |
+        <TRY> { line = token.beginLine; }
+        tryBlock = block() 
+        (
+             LOOKAHEAD( <CATCH> ) 
+             <CATCH> catchClause = catchClause() 
+             { catchClauses.add( catchClause ); }
+        )*
+        [ 
+             LOOKAHEAD( <FINALLY> ) 
+             <FINALLY> finallyBlock = block() 
+        ]
+        { statement = new JTryStatement( line, tryBlock, catchClauses, finallyBlock ); } |
         <SEMI> 
         { statement = new JEmptyStatement( line ); } |
         // Must be a statementExpression
@@ -745,6 +808,36 @@ private JStatement statement(): {
         recoverFromError( new int[] { SEMI, EOF }, e ); 
     }
     { return statement; }
+}
+
+/**
+ * Parse catch clause.
+ * 
+ * <pre>
+ *   catchClause ::= CATCH LPAREN formalParameter RPAREN block
+ * </pre>
+ * 
+ * @return a catch clause.
+ */
+
+private JCatchClause catchClause(): {
+    int line = 0;
+    JFormalParameter catchParameter = null;
+    JBlock catchBlock = null;
+    JCatchClause catchClause = null;
+}
+{
+    try {
+        <LPAREN> { line = token.beginLine; }
+        catchParameter = formalParameter()
+        <RPAREN>
+        catchBlock = block()
+        { catchClause = new JCatchClause( line, catchParameter, catchBlock ); }
+    } 
+    catch ( ParseException e ) { 
+        recoverFromError( new int[] { SEMI, EOF }, e ); 
+    }
+    { return catchClause; }
 }
 
 /**
