@@ -1247,7 +1247,12 @@ public class Parser {
             return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LE)) {
             return new JLessEqualOp(line, lhs, shiftExpression());
-        } else if (have(INSTANCEOF)) {
+        } else if (have(GE)) {
+        	return new JGreaterEqualOp(line, lhs, shiftExpression());
+        } else if (have(LT)) {
+        	return new JLessOp(line, lhs, shiftExpression());
+        }
+          else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
             return lhs;
