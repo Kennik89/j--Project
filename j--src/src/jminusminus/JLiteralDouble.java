@@ -25,7 +25,11 @@ private String text;
 	@Override
 	public void codegen(CLEmitter output) {
 		// TODO Auto-generated method stub
+		double d  = Double.parseDouble(text);
 		
+		if		(d==0.0) 	output.addNoArgInstruction(DCONST_0);
+		else if	(d==1.0)	output.addNoArgInstruction(DCONST_1);
+		else				output.addLDCInstruction(d);		
 	}
 
 	@Override

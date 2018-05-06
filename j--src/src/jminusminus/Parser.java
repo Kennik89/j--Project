@@ -1000,13 +1000,13 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalAndExpression();
+        JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
             return new JPlusAssignOp(line, lhs, assignmentExpression());
         } else if (have(MINUS_ASSIGN)) {
-            return new JSubtractAssignOp(line, lhs, assignmentExpression());
+            return new JMinusAssignOp(line, lhs, assignmentExpression());
         } else if (have(STAR_ASSIGN)) {
             return new JMultiplyAssignOp(line, lhs, assignmentExpression());
         } else if (have(DIV_ASSIGN)) {
@@ -1030,9 +1030,15 @@ public class Parser {
      */
     private JExpression conditionalExpression() {
     	int line = scanner.token().line();
-    	if(have(IDENTIFIER) && have(QM) && have(IDENTIFIER) && have(COLON) && have )
+    	JExpression cond = conditionalAndExpression();
     	
+    	if(have(QM)) {
+    		JExpression lhs = conditionalAndExpression();
+    		mustBe(COLON);
+    		return new JConditionalExpression(line, cond, lhs, conditionalExpression());
     	}
+    	return cond;
+    }
 
     private JExpression conditionalOrExpression() {
         int line = scanner.token().line();
@@ -1040,11 +1046,7 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
-<<<<<<< HEAD
-                //lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
-=======
->>>>>>> branch 'AddDouble' of https://github.com/Kennik89/j--Project.git
-               // lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+
             } else {
                 more = false;
             }

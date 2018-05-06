@@ -1,10 +1,7 @@
 package junit;
 
 import junit.framework.TestCase;
-<<<<<<< HEAD
-=======
-//import pass.MultiLinesComment;
->>>>>>> branch 'AddDouble' of https://github.com/Kennik89/j--Project.git
+
 
 public class MultiLinesCommentTest {
 
@@ -20,10 +17,7 @@ public class MultiLinesCommentTest {
 		/*
 		assertFalse();
 		*/
-<<<<<<< HEAD
-=======
-		
->>>>>>> branch 'AddDouble' of https://github.com/Kennik89/j--Project.git
+
 	}
 
 }

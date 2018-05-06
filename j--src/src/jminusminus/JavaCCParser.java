@@ -1100,7 +1100,7 @@ class JavaCCParser implements JavaCCParserConstants {
         case MINUS_ASSIGN:
           jj_consume_token(MINUS_ASSIGN);
           rhs = assignmentExpression();
-              lhs = new JSubtractAssignOp( line, lhs, rhs );
+              lhs = new JMinusAssignOp( line, lhs, rhs );
           break;
         case STAR_ASSIGN:
           jj_consume_token(STAR_ASSIGN);
