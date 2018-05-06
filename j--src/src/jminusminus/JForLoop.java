@@ -4,13 +4,14 @@ import static jminusminus.CLConstants.GOTO;
 
 public class JForLoop extends JStatement {
 	
-    private JStatementExpression for_decl;
+    //private JStatementExpression for_decl;
+	private JVariableDeclarator for_decl;
     private JExpression condition;
     private JStatementExpression incrementer;
     private JStatement body;
     
     
-	public JForLoop(int line, JStatementExpression for_decl, JExpression condition, JStatementExpression incrementer, JStatement body) {
+	public JForLoop(int line, JVariableDeclarator for_decl, JExpression condition, JStatementExpression incrementer, JStatement body) {
 		super(line);
 		this.for_decl = for_decl;
 		this.condition = condition;
@@ -30,8 +31,8 @@ public class JForLoop extends JStatement {
 
     public JForLoop analyze(Context context) {
     	
-    	for_decl = (JStatementExpression) for_decl.analyze(context);
-    	if(!(for_decl.expr.type() == Type.INT))
+    	for_decl = (JVariableDeclarator) for_decl.analyze(context);
+    	if(!(for_decl.type() == Type.INT))
     		error_printer("For_Decl: Expected to find INT but did not");
       	
     	condition = condition.analyze(context);

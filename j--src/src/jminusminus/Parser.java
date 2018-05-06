@@ -682,27 +682,21 @@ public class Parser {
 			JExpression test = parExpression();
 			JStatement statement = statement();
 			return new JWhileStatement(line, test, statement);
-		} else if(have(FOR) && have(LPAREN)) {
-			
-			JStatementExpression for_decl = new JStatementExpression(line, expression());
-			if(!have(SEMI))
-				reportParserError("Diden't find token ;", scanner.token().image());	
-
+		} else if(have(FOR)) {
+			//Int can be initialized before				
+			mustBe(LPAREN);
+			mustBe(INT);
+			JVariableDeclarator for_decl = variableDeclarator(Type.INT);
+			mustBe(SEMI);
 			JExpression condition = expression();
-
-			if(!have(SEMI))
-				reportParserError("Diden't find token ;", scanner.token().image());
-
+			PrettyPrinter p = new PrettyPrinter();
+			System.out.println("HERE -------------------- ");
+			condition.writeToStdOut(p);
+			mustBe(SEMI);
 			JStatementExpression incrementer = new JStatementExpression(line, expression());
-			
-			if(!have(RPAREN))
-				reportParserError("Diden't find token )", scanner.token().image());
-			
+			mustBe(RPAREN);
 			JStatement body = statement();
-			
 			return new JForLoop(line, for_decl, condition, incrementer, body);
-
-
 		}
 
 		else if (have(RETURN)) {
