@@ -103,6 +103,19 @@ class JMethodDeclaration
         // Resolve return type
         returnType = returnType.resolve(context);
 
+        // Check throws types
+        if (idents != null) {
+            for (TypeName ident : idents) {
+                Type type = ident.resolve(context);
+                if ((type != null) && (type.classRep() != null)) {
+                    if (!Type.THROWABLE.isJavaAssignableFrom(type)) {
+                        JAST.compilationUnit.reportSemanticError(line(),
+                                "Throws type %s is not a subtype of %s", type, Type.THROWABLE);
+                    }
+                }
+            }
+        }
+
         // Check proper local use of abstract
         if (isAbstract && body != null) {
             JAST.compilationUnit.reportSemanticError(line(),
@@ -184,7 +197,18 @@ class JMethodDeclaration
         // Generate a method with an empty body; need a return to
         // make
         // the class verifier happy.
-        partial.addMethod(mods, name, descriptor, null, false);
+        ArrayList<String> exceptions = new ArrayList<String>();
+        if (idents != null) {
+            for (TypeName ident : idents) {
+                Type type = ident.resolve(context);
+                if ((type != null) && (type.classRep() != null)) {
+                    if (Type.THROWABLE.isJavaAssignableFrom(type)) {
+                        exceptions.add(type.jvmName());
+                    }
+                }
+            }
+        }
+        partial.addMethod(mods, name, descriptor, exceptions, false);
 
         // Add implicit RETURN
         if (returnType == Type.VOID) {
@@ -209,7 +233,18 @@ class JMethodDeclaration
      */
 
     public void codegen(CLEmitter output) {
-        output.addMethod(mods, name, descriptor, null, false);
+        ArrayList<String> exceptions = new ArrayList<String>();
+        if (idents != null) {
+            for (TypeName ident : idents) {
+                Type type = ident.resolve(context);
+                if ((type != null) && (type.classRep() != null)) {
+                    if (Type.THROWABLE.isJavaAssignableFrom(type)) {
+                        exceptions.add(type.jvmName());
+                    }
+                }
+            }
+        }
+        output.addMethod(mods, name, descriptor, exceptions, false);
         if (body != null) {
             body.codegen(output);
         }

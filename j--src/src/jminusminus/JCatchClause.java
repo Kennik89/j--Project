@@ -2,6 +2,8 @@
 
 package jminusminus;
 
+import static jminusminus.CLConstants.ASTORE;
+
 /**
  * The AST node for a catch clause declaration. All analysis and code
  * generation is done in a parent AST.
@@ -12,8 +14,17 @@ class JCatchClause extends JAST {
     /** Catch clause formal parameter. */
     private JFormalParameter param;
 
+    /** Catch clause exception type. */
+    private Type type;
+
     /** Catch clause block. */
     private JBlock block;
+
+    /**
+     * The new context and vardefn (built in analyze()) for the formal parameter.
+     */
+    private LocalContext context;
+    private LocalVariableDefn vardefn;
 
     /**
      * Construct an AST node for a catch clause declaration given its line
@@ -44,6 +55,16 @@ class JCatchClause extends JAST {
     }
 
     /**
+     * Return the type.
+     * 
+     * @return the type.
+     */
+
+    public Type type() {
+        return type;
+    }
+
+    /**
      * Return the block.
      * 
      * @return the block.
@@ -60,7 +81,20 @@ class JCatchClause extends JAST {
      */
 
     public JAST analyze(Context context) {
-        // TODO
+        type = param.type().resolve(context);
+        if ((type != null) && (type.classRep() != null)) {
+            if (!Type.THROWABLE.isJavaAssignableFrom(type)) {
+                JAST.compilationUnit.reportSemanticError(line(),
+                        "Catch type %s is not a subtype of %s", type, Type.THROWABLE);
+            }
+        }
+
+        this.context = new LocalContext(context);
+        this.vardefn = new LocalVariableDefn(type, this.context.nextOffset());
+        this.vardefn.initialize();
+        this.context.addEntry(param.line(), param.name(), this.vardefn);
+
+        block = block.analyze(this.context);
         return this;
     }
 
@@ -71,7 +105,8 @@ class JCatchClause extends JAST {
      */
 
     public void codegen(CLEmitter output) {
-        // TODO
+        output.addOneArgInstruction(ASTORE, this.vardefn.offset());
+        block.codegen(output);
     }
 
     /**
