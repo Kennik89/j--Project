@@ -546,7 +546,11 @@ public class Parser {
     private JMember memberDecl(ArrayList<String> mods) {
         int line = scanner.token().line();
         JMember memberDecl = null;
-        if (seeIdentLParen()) {
+        if (see(LCURLY)) {
+            // initialization block
+            JBlock body = block();
+            memberDecl = new JInitializationBlockDeclaration(line, mods, body);
+        } else if (seeIdentLParen()) {
             // A constructor
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();

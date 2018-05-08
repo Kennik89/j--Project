@@ -23,6 +23,7 @@ memberDecl ::= IDENTIFIER            // constructor
                  formalParameters [THROWS throwsIdentifiers]
                  (block | SEMI)
              | type variableDeclarators SEMI // field
+             | block // initialization block
 
 throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
 
