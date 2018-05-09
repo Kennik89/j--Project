@@ -143,7 +143,7 @@ SKIP: {" "|"\t"|"\n"|"\r"|"\f"}
 SKIP: {<SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>}
 
 // Multiline comment -- ignored
-SKIP: {<MULTI_LINE_COMMENT: "/*" (~["\n","\r"])* "*/">}
+SKIP: {<MULTI_LINE_COMMENT: "/*" (~["*/"])* "*/">}
 
 // Reserved words
 TOKEN:
@@ -1332,6 +1332,36 @@ private JExpression assignmentExpression(): {
             rhs = assignmentExpression()
             { lhs = new JRemainderAssignOp( line, lhs, rhs ); }
         ]
+    } 
+    catch ( ParseException e ) { 
+        recoverFromError( new int[] { SEMI, EOF }, e ); 
+    }
+    { return lhs; }
+}
+
+/**
+ * Parse a conditional-or expression.
+ * 
+ * <pre>
+ *   conditionalOrExpression ::= conditionalAndExpression // level 10
+ *                                  {LAND conditionalAndExpression}
+ * </pre>
+ * 
+ * @return an AST for a conditionalExpression.
+ */
+
+private JExpression conditionalOrExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = conditionalAndExpression() { line = lhs.line(); }
+        ( 
+            <LAND>
+            rhs = conditionalAndExpression()
+            { lhs = new JLogicalOrOp( line, lhs, rhs ); }
+        )*
     } 
     catch ( ParseException e ) { 
         recoverFromError( new int[] { SEMI, EOF }, e ); 
