@@ -11,7 +11,7 @@ typeDeclaration ::= modifiers classDeclaration
 
 modifiers ::= {PUBLIC | PROTECTED | PRIVATE | STATIC | ABSTRACT}
 
-classDeclaration ::= CLASS IDENTIFIER
+classDeclaration ::= (CLASS | INTERFACE) IDENTIFIER
                        [EXTENDS qualifiedIdentifier]
                        classBody
 
@@ -27,7 +27,7 @@ memberDecl ::= IDENTIFIER            // constructor
 
 throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
 
-block ::= LCURLY {blockStatement} RCURLY 
+block ::= LCURLY {blockStatement} RCURLY
 
 blockStatement ::= localVariableDeclarationStatement
                  | statement
@@ -39,12 +39,12 @@ statement ::= block
             | THROW expression SEMI
             | TRY block CATCH catchClause {CATCH catchClause}
             | TRY block {CATCH catchClause} FINALLY block
-            | SEMI 
+            | SEMI
             | statementExpression SEMI
 
 catchClause ::= LPAREN formalParameter RPAREN block
 
-formalParameters ::= LPAREN 
+formalParameters ::= LPAREN
                        [formalParameter {COMMA formalParameter}]
                      RPAREN
 
@@ -77,11 +77,11 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= conditionalEXpression  // must be a valid lhs
+assignmentExpression ::= conditionalOrExpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN | DIV_ASSIGN | REM_ASSIGN) assignmentExpression]
 
 conditionalEXpression::= conditionalOrExpression [? conditionalOrExpression : conditionalOrExpression] // lv 12
-        
+
 
 conditionalOrExpression ::= conditionalAndExpression // level 11
                               {LOR conditionalAndExpression}
