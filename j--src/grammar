@@ -77,8 +77,11 @@ statementExpression ::= expression // but must have side-effect, eg i++
 
 expression ::= assignmentExpression
 
-assignmentExpression ::= conditionalAndExpression  // must be a valid lhs
+assignmentExpression ::= conditionalEXpression  // must be a valid lhs
                            [(ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | STAR_ASSIGN | DIV_ASSIGN | REM_ASSIGN) assignmentExpression]
+
+conditionalEXpression::= conditionalOrExpression [? conditionalOrExpression : conditionalOrExpression] // lv 12
+        
 
 conditionalOrExpression ::= conditionalAndExpression // level 11
                               {LOR conditionalAndExpression}

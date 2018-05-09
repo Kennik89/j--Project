@@ -167,11 +167,13 @@ class JMethodDeclaration
 
         // Declare the parameters. We consider a formal parameter 
         // to be always initialized, via a function call.
-        for (JFormalParameter param : params) {
+        for (JFormalParameter param : params) { // double need to included here for the stack frame as it takes to spots
             LocalVariableDefn defn = new LocalVariableDefn(param.type(), 
                 this.context.nextOffset());
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
+            if(param.type()==Type.DOUBLE)
+            	this.context.nextOffset();
         }
         if (body != null) {
             body = body.analyze(this.context);
@@ -217,7 +219,13 @@ class JMethodDeclaration
             || returnType == Type.BOOLEAN || returnType == Type.CHAR) {
             partial.addNoArgInstruction(ICONST_0);
             partial.addNoArgInstruction(IRETURN);
-        } else {
+        } 
+        // double need its own Instructions set
+        else if(returnType == Type.DOUBLE) {
+        	partial.addNoArgInstruction(DCONST_0);
+        	partial.addNoArgInstruction(DRETURN);
+        }
+        else {
             // A reference type.
             partial.addNoArgInstruction(ACONST_NULL);
             partial.addNoArgInstruction(ARETURN);

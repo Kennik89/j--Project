@@ -407,8 +407,13 @@ class JavaCCParser implements JavaCCParserConstants {
         body = block();
                 memberDecl =
                 new JConstructorDeclaration( line, mods,
+<<<<<<< HEAD
                                              name, params, idents, body );
       } else if (jj_2_3(2147483647)) {
+=======
+                                             name, params, null, body );
+      } else if (jj_2_2(2147483647)) {
+>>>>>>> AddDouble
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case VOID:
           jj_consume_token(VOID);
@@ -452,7 +457,11 @@ class JavaCCParser implements JavaCCParserConstants {
         }
                 memberDecl =
                    new JMethodDeclaration( line, mods, name,
+<<<<<<< HEAD
                                            type, params, idents, body );
+=======
+                                           type, params, null, body );
+>>>>>>> AddDouble
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BOOLEAN:
@@ -1216,7 +1225,7 @@ class JavaCCParser implements JavaCCParserConstants {
         case MINUS_ASSIGN:
           jj_consume_token(MINUS_ASSIGN);
           rhs = assignmentExpression();
-              lhs = new JSubtractAssignOp( line, lhs, rhs );
+              lhs = new JMinusAssignOp( line, lhs, rhs );
           break;
         case STAR_ASSIGN:
           jj_consume_token(STAR_ASSIGN);

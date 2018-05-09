@@ -606,7 +606,11 @@ private JMember memberDecl( ArrayList<String>  mods ): {
             { 
                 memberDecl = 
                 new JConstructorDeclaration( line, mods, 
+<<<<<<< HEAD
                                              name, params, idents, body );
+=======
+                                             name, params, null, body );
+>>>>>>> AddDouble
             }
         ) |     
         LOOKAHEAD( ( <VOID> | type() ) <IDENTIFIER> <LPAREN> )
@@ -629,7 +633,11 @@ private JMember memberDecl( ArrayList<String>  mods ): {
             { 
                 memberDecl = 
                    new JMethodDeclaration( line, mods, name, 
+<<<<<<< HEAD
                                            type, params, idents, body ); 
+=======
+                                           type, params, null, body ); 
+>>>>>>> AddDouble
             } 
         ) | 
         ( 

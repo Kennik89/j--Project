@@ -2,6 +2,7 @@ package junit;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import pass.DoubleBasicDataType;
 
 public class CompilerOutputTest {
 
@@ -27,6 +28,9 @@ public class CompilerOutputTest {
 		suite.addTestSuite(SeriesTest.class);
 		suite.addTestSuite(SubtractTest.class);
 		suite.addTestSuite(UnaryPlusTest.class);
+		
+		suite.addTestSuite(DoubleTypeTest.class);
+		suite.addTestSuite(CondtionalTest.class);
 		//$JUnit-END$
 		return suite;
 	}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package pass.step2;
 
 public class StaticAndInstanceInitBlocks {
@@ -10,3 +11,10 @@ public class StaticAndInstanceInitBlocks {
         yz = 4;
     }
 }
+=======
+//package pass.step2;
+//
+//public class StaticAndInstanceInitBlocks {
+//
+//}
+>>>>>>> AddDouble
