@@ -546,7 +546,11 @@ public class Parser {
     private JMember memberDecl(ArrayList<String> mods) {
         int line = scanner.token().line();
         JMember memberDecl = null;
-        if (seeIdentLParen()) {
+        if (see(LCURLY)) {
+            // initialization block
+            JBlock body = block();
+            memberDecl = new JInitializationBlockDeclaration(line, mods, body);
+        } else if (seeIdentLParen()) {
             // A constructor
             mustBe(IDENTIFIER);
             String name = scanner.previousToken().image();
@@ -1247,7 +1251,12 @@ public class Parser {
             return new JGreaterThanOp(line, lhs, shiftExpression());
         } else if (have(LE)) {
             return new JLessEqualOp(line, lhs, shiftExpression());
-        } else if (have(INSTANCEOF)) {
+        } else if (have(GE)) {
+        	return new JGreaterEqualOp(line, lhs, shiftExpression());
+        } else if (have(LT)) {
+        	return new JLessOp(line, lhs, shiftExpression());
+        }
+          else if (have(INSTANCEOF)) {
             return new JInstanceOfOp(line, lhs, referenceType());
         } else {
             return lhs;

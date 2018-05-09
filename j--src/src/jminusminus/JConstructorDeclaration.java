@@ -127,7 +127,18 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
      */
 
     public void partialCodegen(Context context, CLEmitter partial) {
-        partial.addMethod(mods, "<init>", descriptor, null, false);
+        ArrayList<String> exceptions = new ArrayList<String>();
+        if (idents != null) {
+            for (TypeName ident : idents) {
+                Type type = ident.resolve(context);
+                if ((type != null) && (type.classRep() != null)) {
+                    if (Type.THROWABLE.isJavaAssignableFrom(type)) {
+                        exceptions.add(type.jvmName());
+                    }
+                }
+            }
+        }
+        partial.addMethod(mods, "<init>", descriptor, exceptions, false);
         if (!invokesConstructor) {
             partial.addNoArgInstruction(ALOAD_0);
             partial.addMemberAccessInstruction(INVOKESPECIAL,
@@ -146,17 +157,33 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
      */
 
     public void codegen(CLEmitter output) {
-        output.addMethod(mods, "<init>", descriptor, null, false);
+        ArrayList<String> exceptions = new ArrayList<String>();
+        if (idents != null) {
+            for (TypeName ident : idents) {
+                Type type = ident.resolve(context);
+                if ((type != null) && (type.classRep() != null)) {
+                    if (Type.THROWABLE.isJavaAssignableFrom(type)) {
+                        exceptions.add(type.jvmName());
+                    }
+                }
+            }
+        }
+        output.addMethod(mods, "<init>", descriptor, exceptions, false);
         if (!invokesConstructor) {
             output.addNoArgInstruction(ALOAD_0);
             output.addMemberAccessInstruction(INVOKESPECIAL,
                     ((JTypeDecl) context.classContext().definition())
                             .superType().jvmName(), "<init>", "()V");
         }
-        // Field initializations
-        for (JFieldDeclaration field : definingClass
-                .instanceFieldInitializations()) {
-            field.codegenInitializations(output);
+        // If there are instance initializations, generate
+        // code for them
+        for (JMember instanceDecl : definingClass.instanceInitializationDeclarations()) {
+            if (instanceDecl instanceof JFieldDeclaration) {
+                ((JFieldDeclaration)instanceDecl).codegenInitializations(output);
+            }
+            else if (instanceDecl instanceof JInitializationBlockDeclaration) {
+                ((JInitializationBlockDeclaration)instanceDecl).codegenInitializations(output);
+            }
         }
         // And then the body
         body.codegen(output);
@@ -191,6 +218,15 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
                 p.indentLeft();
             }
             p.println("</FormalParameters>");
+        }
+        if (idents != null) {
+            p.println("<ThrowsIdentifiers>");
+            p.indentRight();
+            for (TypeName ident : idents) {
+                p.printf("<ThrowsIdentifier type=\"%s\"/>\n", ident);
+            }
+            p.indentLeft();
+            p.println("</ThrowsIdentifiers>");
         }
         if (body != null) {
             p.println("<Body>");

@@ -2,7 +2,7 @@ package pass.step2;
 
 public class ExceptionHandling {
 	
-	public static int exceptions(int arg) throws Exception {
+	public int exceptions(int arg) throws Exception {
 		try {
 			while(arg <= 0) {
 				arg = arg + 1;
@@ -15,6 +15,9 @@ public class ExceptionHandling {
 			if (arg <= 2) {
 				throw new Exception();
 			}
+		}
+		if (arg <= 2) {
+			throw new Exception();
 		}
 		return arg;
 	}
