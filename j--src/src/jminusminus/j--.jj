@@ -1323,7 +1323,7 @@ private JExpression assignmentExpression(): {
             { lhs = new JPlusAssignOp( line, lhs, rhs ); } |
             <MINUS_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JSubtractAssignOp( line, lhs, rhs ); } |
+            { lhs = new JMinusAssignOp( line, lhs, rhs ); } |
             <STAR_ASSIGN>
             rhs = assignmentExpression()
             { lhs = new JMultiplyAssignOp( line, lhs, rhs ); } |
