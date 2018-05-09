@@ -30,6 +30,7 @@ class JTryStatement extends JStatement {
     private int nextOffset;
 
     /**
+
      * Construct an AST node for a try-statement given its line number,
      * the try block, the catch clauses, and the finally block.
      * 
@@ -58,6 +59,7 @@ class JTryStatement extends JStatement {
      */
 
     public JStatement analyze(Context context) {
+
         tryBlock = tryBlock.analyze(context);
         boolean hasCatch = false;
         if (catchClauses != null) {
@@ -75,6 +77,7 @@ class JTryStatement extends JStatement {
         }
         this.context = new LocalContext(context);
         this.nextOffset = this.context.nextOffset();
+
         return this;
     }
 
@@ -85,6 +88,7 @@ class JTryStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
+
         String tryBegin = "tryBegin_" + line();
         String tryEnd = "tryEnd_" + line();
         String finallyBegin = "finallyBegin_" + line();
@@ -124,6 +128,7 @@ class JTryStatement extends JStatement {
         output.addNoArgInstruction(ATHROW);
         output.addExceptionHandler(tryBegin, tryEnd, finallyBegin, null);
         output.addLabel(finallyEnd);
+
     }
 
     /**

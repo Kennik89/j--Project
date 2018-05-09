@@ -46,6 +46,7 @@ public abstract strictfp class Keywords extends Object implements Contract {
 				c = t.charAt(i);
 			}
 		}
+		
 	}
 
 	protected synchronized boolean method1(boolean arg1) {

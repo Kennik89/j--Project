@@ -81,6 +81,7 @@ class JCatchClause extends JAST {
      */
 
     public JAST analyze(Context context) {
+
         type = param.type().resolve(context);
         if ((type != null) && (type.classRep() != null)) {
             if (!Type.THROWABLE.isJavaAssignableFrom(type)) {
@@ -95,6 +96,7 @@ class JCatchClause extends JAST {
         this.context.addEntry(param.line(), param.name(), this.vardefn);
 
         block = block.analyze(this.context);
+
         return this;
     }
 
@@ -105,8 +107,10 @@ class JCatchClause extends JAST {
      */
 
     public void codegen(CLEmitter output) {
+
         output.addOneArgInstruction(ASTORE, this.vardefn.offset());
         block.codegen(output);
+
     }
 
     /**

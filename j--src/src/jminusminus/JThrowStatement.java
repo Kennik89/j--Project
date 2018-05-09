@@ -39,6 +39,7 @@ class JThrowStatement
      */
 
     public JStatement analyze(Context context) {
+
         expr = (JExpression) expr.analyze(context);
         Type type = expr.type();
         if ((type != null) && (type.classRep() != null)) {
@@ -47,6 +48,7 @@ class JThrowStatement
                         "Throw type %s is not a subtype of %s", type, Type.THROWABLE);
             }
         }
+
         return this;
     }
 
@@ -57,8 +59,10 @@ class JThrowStatement
      */
 
     public void codegen(CLEmitter output) {
+
         expr.codegen(output);
         output.addNoArgInstruction(ATHROW);
+
     }
 
     /**

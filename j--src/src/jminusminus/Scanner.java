@@ -262,6 +262,22 @@ class Scanner {
         case '0':
             // Handle only simple decimal integers for now.
             nextCh();
+            // check for potenial double
+            if(ch=='.') {
+            	nextCh();
+            	if(isDigit(ch)) {
+            		buffer = new StringBuffer("0.");
+            		while(isDigit(ch)) {
+            			buffer.append(ch);
+            			nextCh();
+            		}
+            		return new TokenInfo(DOUBLE_LITERAL,buffer.toString(),line);
+            	} else {
+            		reportScannerError("not a valid 0. double: %c",ch );
+            		nextCh();
+            		return getNextToken();
+            	}
+            }
             return new TokenInfo(INT_LITERAL, "0", line);
         case '1':
         case '2':
@@ -277,7 +293,24 @@ class Scanner {
                 buffer.append(ch);
                 nextCh();
             }
+            // check for potential double
+            if(ch =='.') {
+            	buffer.append(ch);
+            	nextCh();
+            	if(isDigit(ch)) {
+            		while(isDigit(ch)) {
+            			buffer.append(ch);
+            			nextCh();
+            		}
+            		return new TokenInfo(DOUBLE_LITERAL,buffer.toString(),line);
+            	}else {            		
+            		reportScannerError("not a valid xxx.xx double: %c",ch );
+            		nextCh();
+            		return getNextToken();
+            	}
+            }
             return new TokenInfo(INT_LITERAL, buffer.toString(), line);
+            
         default:
             if (isIdentifierStart(ch)) {
                 buffer = new StringBuffer();
