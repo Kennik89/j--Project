@@ -31,11 +31,8 @@ class JThrowStatement
     }
 
     /**
-<<<<<<< HEAD
      * Analyze throw statement by checking that the expr is of type Throwable
      * 
-=======
->>>>>>> AddDouble
      * @param context
      *                context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
