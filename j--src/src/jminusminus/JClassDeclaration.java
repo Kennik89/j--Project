@@ -176,7 +176,7 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         }
 
         // Add the implicit empty constructor?
-        if (!hasExplicitConstructor) {
+        if (isClass && !hasExplicitConstructor) {
             codegenPartialImplicitConstructor(partial);
         }
 
