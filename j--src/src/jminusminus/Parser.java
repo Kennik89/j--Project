@@ -1086,7 +1086,7 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-        JExpression lhs = conditionalOrExpression();
+        JExpression lhs = conditionalExpression();
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1116,10 +1116,10 @@ public class Parser {
      */
     private JExpression conditionalExpression() {
     	int line = scanner.token().line();
-    	JExpression cond = conditionalAndExpression();
+    	JExpression cond = conditionalOrExpression();
     	
     	if(have(QM)) {
-    		JExpression lhs = conditionalAndExpression();
+    		JExpression lhs = conditionalOrExpression();
     		mustBe(COLON);
     		return new JConditionalExpression(line, cond, lhs, conditionalExpression());
     	}
