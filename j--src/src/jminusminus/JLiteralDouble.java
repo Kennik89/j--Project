@@ -29,7 +29,10 @@ private String text;
 		
 		if		(d==0.0) 	output.addNoArgInstruction(DCONST_0);
 		else if	(d==1.0)	output.addNoArgInstruction(DCONST_1);
-		else				output.addLDCInstruction(d);		
+		else {
+			output.addLDCInstruction(d);	
+			
+		}
 	}
 
 	@Override

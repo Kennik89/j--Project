@@ -6,8 +6,19 @@ import java.lang.System;
 public class DoubleBasicDataType {
 	
 	public double methodReturn() {
-		reutrn 6.0;
+		return 0.0;
 	}
+	public boolean acceptMethodParams(double x, double y) { return true;	}
+	
+	public double correctMethodsParamValue(double x) {
+		return x;
+	}
+	
+	public double[] correctMethodsParamsValues(double x,double y) {
+		return new double[] {x,y};
+	}
+	
+	
 	
 	public double assign(double x) {
 		double val = x;

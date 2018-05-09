@@ -32,15 +32,17 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
      *            constructor name.
      * @param params
      *            the formal parameters.
+     * @param idents
+     *            the throws identifiers.
      * @param body
      *            constructor body.
      */
 
     public JConstructorDeclaration(int line, ArrayList<String> mods,
-            String name, ArrayList<JFormalParameter> params, JBlock body)
+            String name, ArrayList<JFormalParameter> params, ArrayList<TypeName> idents, JBlock body)
 
     {
-        super(line, mods, name, Type.CONSTRUCTOR, params, body);
+        super(line, mods, name, Type.CONSTRUCTOR, params, idents, body);
     }
 
     /**
