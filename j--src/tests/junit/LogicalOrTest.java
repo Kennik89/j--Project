@@ -1,24 +1,31 @@
 package junit;
 
 import junit.framework.TestCase;
-import pass.
+import pass.LogicalOrOperator;
 
 public class LogicalOrTest extends TestCase {
-	private ExclusiveOr xor;
+	private LogicalOrOperator lor;
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		xor = new ExclusiveOr();
+		lor = new LogicalOrOperator();
 	}
 	
 	protected void tearDown() throws Exception {
 		super.tearDown();
 	}
 	
-	public void testDivide() {
-		this.assertEquals(xor.xor(0, 42), 42);
-		this.assertEquals(xor.xor(42, 11), 33);
-		this.assertEquals(xor.xor(127, 3), 124);
+	public void testLogicalOr() {
+		this.assertEquals(lor.lor(true, true), true);
+		this.assertEquals(lor.lor(true, false), true);
+		this.assertEquals(lor.lor(false, true), true);
+		this.assertEquals(lor.lor(false, false), false);
+		
+		this.assertEquals(true || shortCiruitCheck(false), true);
 	}
-
+	
+	private boolean shortCiruitCheck(boolean b)	{
+		this.assertFalse("rhs-condition should not be evaluated when lhs is true", true);
+		return b;
+	}
 }

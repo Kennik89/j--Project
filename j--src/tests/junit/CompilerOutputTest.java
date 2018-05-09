@@ -32,6 +32,7 @@ public class CompilerOutputTest {
 		suite.addTestSuite(MultiLinesCommentTest.class);
 		suite.addTestSuite(RemainderTest.class);
 		suite.addTestSuite(InterfaceTest.class);
+		suite.addTestSuite(LogicalOrTest.class);
 		//$JUnit-END$
 		return suite;
 	}

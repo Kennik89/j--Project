@@ -1291,7 +1291,7 @@ private JExpression expression(): {
  * 
  * <pre>
  *   assignmentExpression ::= 
- *       conditionalAndExpression // level 13
+ *       conditionalOrExpression // level 13
  *           [( ASSIGN  // conditionalExpression
  *            | PLUS_ASSIGN // must be valid lhs
  *            | MINUS_ASSIGN // must be valid lhs
@@ -1311,7 +1311,7 @@ private JExpression assignmentExpression(): {
 }
 {
     try {
-        lhs = conditionalAndExpression() { line = lhs.line(); }
+        lhs = conditionalOrExpression() { line = lhs.line(); }
         [       
             <ASSIGN> 
             rhs = assignmentExpression()
@@ -1358,7 +1358,7 @@ private JExpression conditionalOrExpression(): {
     try {
         lhs = conditionalAndExpression() { line = lhs.line(); }
         ( 
-            <LAND>
+            <LOR>
             rhs = conditionalAndExpression()
             { lhs = new JLogicalOrOp( line, lhs, rhs ); }
         )*
