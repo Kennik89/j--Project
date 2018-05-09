@@ -142,6 +142,9 @@ SKIP: {" "|"\t"|"\n"|"\r"|"\f"}
 // Single line comment -- ignored
 SKIP: {<SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n")>}
 
+// Multiline comment -- ignored
+SKIP: {<MULTI_LINE_COMMENT: "/*"(~["*"])* "*"(~["/"] (~["*"])* "*")* "/">}
+
 // Reserved words
 TOKEN:
 {
@@ -482,7 +485,7 @@ private ArrayList<String> modifiers(): {
  * Parse a class declaration.
  * 
  * <pre>
- *   classDeclaration ::= CLASS IDENTIFIER 
+ *   classDeclaration ::= (CLASS | INTERFACE) IDENTIFIER 
  *                        [EXTENDS qualifiedIdentifier] 
  *                        classBody
  * </pre>
@@ -497,12 +500,16 @@ private ArrayList<String> modifiers(): {
 private JClassDeclaration classDeclaration( ArrayList<String> mods ): {
     int line = 0;
     String name = "";
+    boolean isClass = true;
     Type superClass = Type.OBJECT;
     ArrayList<JMember> classBody = null;
 }
 {
     try {
-        <CLASS> { line = token.beginLine; }
+    	(	<CLASS> { line = token.beginLine; isClass = true;}	 |
+    		<INTERFACE> { line = token.beginLine; isClass = false;}
+    	)
+        
         <IDENTIFIER> { name = token.image; }
         [ 
             <EXTENDS> superClass = qualifiedIdentifier() 
@@ -513,7 +520,7 @@ private JClassDeclaration classDeclaration( ArrayList<String> mods ): {
         recoverFromError( new int[] { SEMI, EOF }, e ); 
     }
     { 
-        return new JClassDeclaration( line, mods, 
+        return new JClassDeclaration( line, mods, isClass,
             name, superClass, classBody ); 
     }
 }
@@ -1292,7 +1299,7 @@ private JExpression expression(): {
  * 
  * <pre>
  *   assignmentExpression ::= 
- *       conditionalAndExpression // level 13
+ *       conditionalOrExpression // level 13
  *           [( ASSIGN  // conditionalExpression
  *            | PLUS_ASSIGN // must be valid lhs
  *            | MINUS_ASSIGN // must be valid lhs
@@ -1312,7 +1319,7 @@ private JExpression assignmentExpression(): {
 }
 {
     try {
-        lhs = conditionalAndExpression() { line = lhs.line(); }
+        lhs = conditionalOrExpression() { line = lhs.line(); }
         [       
             <ASSIGN> 
             rhs = assignmentExpression()
@@ -1333,6 +1340,36 @@ private JExpression assignmentExpression(): {
             rhs = assignmentExpression()
             { lhs = new JRemainderAssignOp( line, lhs, rhs ); }
         ]
+    } 
+    catch ( ParseException e ) { 
+        recoverFromError( new int[] { SEMI, EOF }, e ); 
+    }
+    { return lhs; }
+}
+
+/**
+ * Parse a conditional-or expression.
+ * 
+ * <pre>
+ *   conditionalOrExpression ::= conditionalAndExpression // level 10
+ *                                  {LAND conditionalAndExpression}
+ * </pre>
+ * 
+ * @return an AST for a conditionalExpression.
+ */
+
+private JExpression conditionalOrExpression(): {
+    int line = 0;
+    JExpression lhs = null, rhs = null;
+}
+{
+    try {
+        lhs = conditionalAndExpression() { line = lhs.line(); }
+        ( 
+            <LOR>
+            rhs = conditionalAndExpression()
+            { lhs = new JLogicalOrOp( line, lhs, rhs ); }
+        )*
     } 
     catch ( ParseException e ) { 
         recoverFromError( new int[] { SEMI, EOF }, e ); 

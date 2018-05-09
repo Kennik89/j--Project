@@ -20,7 +20,7 @@ public class Parser {
     /** Whether a parser error has been found. */
     private boolean isInError;
 
-    /** Wheter we have recovered from a parser error. */
+    /** Whether we have recovered from a parser error. */
     private boolean isRecovered;
 
     /**
@@ -46,6 +46,7 @@ public class Parser {
     public boolean errorHasOccurred() {
         return isInError;
     }
+
 
     // ////////////////////////////////////////////////
     // Parsing Support ///////////////////////////////
@@ -473,10 +474,10 @@ public class Parser {
     }
 
     /**
-     * Parse a class declaration.
+     * Parse a class/interface declaration.
      *
      * <pre>
-     *   classDeclaration ::= CLASS IDENTIFIER
+     *   classDeclaration ::= (CLASS | INTERFACE) IDENTIFIER
      *                        [EXTENDS qualifiedIdentifier]
      *                        classBody
      * </pre>
@@ -491,7 +492,13 @@ public class Parser {
 
     private JClassDeclaration classDeclaration(ArrayList<String> mods) {
         int line = scanner.token().line();
-        mustBe(CLASS);
+        boolean isClass;
+        if (have(CLASS))	{
+        	isClass = true;
+        } else {
+        	mustBe(INTERFACE);
+        	isClass = false;
+        }
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
         Type superClass;
@@ -500,7 +507,7 @@ public class Parser {
         } else {
             superClass = Type.OBJECT;
         }
-        return new JClassDeclaration(line, mods, name, superClass, classBody());
+        return new JClassDeclaration(line, mods, isClass, name, superClass, classBody());
     }
 
     /**
@@ -535,7 +542,7 @@ public class Parser {
      *                | (VOID | type) IDENTIFIER  // method
      *                    formalParameters
      *                    (block | SEMI)
-     *                | type variableDeclarators SEMI
+     *                | type variableDeclarators SEMI // field
      * </pre>
      *
      * @param mods
@@ -595,11 +602,11 @@ public class Parser {
 
     /**
      * Parse throws identifiers.
-     * 
+     *
      * <pre>
      *   throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
      * </pre>
-     * 
+     *
      * @return a list of throws identifiers.
      */
 
@@ -665,7 +672,7 @@ public class Parser {
      *               | THROW expression SEMI
      *               | TRY block catchClause {catchClause}
      *               | TRY block {catchClause} FINALLY block
-     *               | SEMI 
+     *               | SEMI
      *               | statementExpression SEMI
      * </pre>
      *
@@ -730,11 +737,11 @@ public class Parser {
 
     /**
      * Parse catch clause.
-     * 
+     *
      * <pre>
      *   catchClause ::= LPAREN formalParameter RPAREN block
      * </pre>
-     * 
+     *
      * @return a catch clause.
      */
 
@@ -1067,7 +1074,7 @@ public class Parser {
      *
      * <pre>
      *   assignmentExpression ::=
-     *       conditionalAndExpression // level 13
+     *       conditionalOrExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
      *            )
@@ -1079,7 +1086,11 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
+<<<<<<< HEAD
+        JExpression lhs = conditionalOrExpression();
+=======
         JExpression lhs = conditionalExpression();
+>>>>>>> master
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1125,7 +1136,11 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
+<<<<<<< HEAD
+                lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
+=======
 
+>>>>>>> master
             } else {
                 more = false;
             }
