@@ -69,7 +69,7 @@ public class JForLoop extends JStatement {
         
         if(condition != null) {
             body.codegen(output);
-            //incrementer.codegen(output);
+            incrementer.codegen(output);
             output.addBranchInstruction(GOTO, condition_Label);
         } else {
             output.addBranchInstruction(GOTO, endLabel);
