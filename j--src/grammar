@@ -18,11 +18,13 @@ classDeclaration ::= CLASS IDENTIFIER
 classBody ::= LCURLY {modifiers memberDecl} RCURLY
 
 memberDecl ::= IDENTIFIER            // constructor
+                 formalParameters [THROWS throwsIdentifiers] block
              | (VOID | type) IDENTIFIER  // method
                  formalParameters [THROWS throwsIdentifiers]
                  (block | SEMI)
              | type variableDeclarators SEMI // field
 
+throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
 
 block ::= LCURLY {blockStatement} RCURLY 
 
