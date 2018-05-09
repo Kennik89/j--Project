@@ -12,11 +12,13 @@ public class CompilerOutputTest {
 		suite.addTestSuite(AndTest.class);
 		suite.addTestSuite(ClassesTest.class);
 		suite.addTestSuite(DivisionTest.class);
+		suite.addTestSuite(ExceptionHandlingTest.class);
 		suite.addTestSuite(ExclusiveOrTest.class);
 		suite.addTestSuite(FactorialTest.class);
 		suite.addTestSuite(GCDTest.class);
 		suite.addTestSuite(HelloWorldTest.class);
 		suite.addTestSuite(InclusiveOrTest.class);
+        suite.addTestSuite(InitializationBlockTest.class);
 		suite.addTestSuite(LeftShiftTest.class);
 		suite.addTestSuite(LogicalRightShiftTest.class);
 		suite.addTestSuite(MultiplyTest.class);
