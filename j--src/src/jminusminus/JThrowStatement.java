@@ -2,11 +2,8 @@
 
 package jminusminus;
 
-<<<<<<< HEAD
 import static jminusminus.CLConstants.ATHROW;
 
-=======
->>>>>>> AddDouble
 /**
  * The AST node for a throw-statement.
  */
@@ -45,7 +42,7 @@ class JThrowStatement
      */
 
     public JStatement analyze(Context context) {
-<<<<<<< HEAD
+
         expr = (JExpression) expr.analyze(context);
         Type type = expr.type();
         if ((type != null) && (type.classRep() != null)) {
@@ -54,9 +51,7 @@ class JThrowStatement
                         "Throw type %s is not a subtype of %s", type, Type.THROWABLE);
             }
         }
-=======
-        // TODO
->>>>>>> AddDouble
+
         return this;
     }
 
@@ -67,12 +62,10 @@ class JThrowStatement
      */
 
     public void codegen(CLEmitter output) {
-<<<<<<< HEAD
+
         expr.codegen(output);
         output.addNoArgInstruction(ATHROW);
-=======
-        // TODO
->>>>>>> AddDouble
+
     }
 
     /**

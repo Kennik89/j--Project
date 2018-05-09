@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package pass.step2;
 
 public class ExceptionHandling {
@@ -24,10 +23,4 @@ public class ExceptionHandling {
 	}
 
 }
-=======
-//package pass.step2;
-//
-//public class ExceptionHandling {
-//
-//}
->>>>>>> AddDouble
+

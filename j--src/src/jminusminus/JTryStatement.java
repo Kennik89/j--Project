@@ -2,13 +2,10 @@
 
 package jminusminus;
 
-<<<<<<< HEAD
 import static jminusminus.CLConstants.ALOAD;
 import static jminusminus.CLConstants.ASTORE;
 import static jminusminus.CLConstants.ATHROW;
 
-=======
->>>>>>> AddDouble
 import java.util.ArrayList;
 
 /**
@@ -27,15 +24,13 @@ class JTryStatement extends JStatement {
     private JBlock finallyBlock;
 
     /**
-<<<<<<< HEAD
      * The new context and offset (built in analyze()) for the throw on part.
      */
     private LocalContext context;
     private int nextOffset;
 
     /**
-=======
->>>>>>> AddDouble
+
      * Construct an AST node for a try-statement given its line number,
      * the try block, the catch clauses, and the finally block.
      * 
@@ -64,7 +59,7 @@ class JTryStatement extends JStatement {
      */
 
     public JStatement analyze(Context context) {
-<<<<<<< HEAD
+
         tryBlock = tryBlock.analyze(context);
         boolean hasCatch = false;
         if (catchClauses != null) {
@@ -82,15 +77,7 @@ class JTryStatement extends JStatement {
         }
         this.context = new LocalContext(context);
         this.nextOffset = this.context.nextOffset();
-=======
-		// TODO
-//        condition = (JExpression) condition.analyze(context);
-//        condition.type().mustMatchExpected(line(), Type.BOOLEAN);
-//        thenPart = (JStatement) thenPart.analyze(context);
-//        if (elsePart != null) {
-//            elsePart = (JStatement) elsePart.analyze(context);
-//        }
->>>>>>> AddDouble
+
         return this;
     }
 
@@ -101,7 +88,7 @@ class JTryStatement extends JStatement {
      */
 
     public void codegen(CLEmitter output) {
-<<<<<<< HEAD
+
         String tryBegin = "tryBegin_" + line();
         String tryEnd = "tryEnd_" + line();
         String finallyBegin = "finallyBegin_" + line();
@@ -141,9 +128,7 @@ class JTryStatement extends JStatement {
         output.addNoArgInstruction(ATHROW);
         output.addExceptionHandler(tryBegin, tryEnd, finallyBegin, null);
         output.addLabel(finallyEnd);
-=======
-    		// TODO
->>>>>>> AddDouble
+
     }
 
     /**

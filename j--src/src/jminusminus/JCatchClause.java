@@ -2,11 +2,8 @@
 
 package jminusminus;
 
-<<<<<<< HEAD
 import static jminusminus.CLConstants.ASTORE;
 
-=======
->>>>>>> AddDouble
 /**
  * The AST node for a catch clause declaration. All analysis and code
  * generation is done in a parent AST.
@@ -17,12 +14,9 @@ class JCatchClause extends JAST {
     /** Catch clause formal parameter. */
     private JFormalParameter param;
 
-<<<<<<< HEAD
     /** Catch clause exception type. */
     private Type type;
 
-=======
->>>>>>> AddDouble
     /** Catch clause block. */
     private JBlock block;
 
@@ -93,7 +87,7 @@ class JCatchClause extends JAST {
      */
 
     public JAST analyze(Context context) {
-<<<<<<< HEAD
+
         type = param.type().resolve(context);
         if ((type != null) && (type.classRep() != null)) {
             if (!Type.THROWABLE.isJavaAssignableFrom(type)) {
@@ -108,9 +102,7 @@ class JCatchClause extends JAST {
         this.context.addEntry(param.line(), param.name(), this.vardefn);
 
         block = block.analyze(this.context);
-=======
-        // TODO
->>>>>>> AddDouble
+
         return this;
     }
 
@@ -121,12 +113,10 @@ class JCatchClause extends JAST {
      */
 
     public void codegen(CLEmitter output) {
-<<<<<<< HEAD
+
         output.addOneArgInstruction(ASTORE, this.vardefn.offset());
         block.codegen(output);
-=======
-        // TODO
->>>>>>> AddDouble
+
     }
 
     /**

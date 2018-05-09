@@ -407,61 +407,10 @@ class JavaCCParser implements JavaCCParserConstants {
         body = block();
                 memberDecl =
                 new JConstructorDeclaration( line, mods,
-<<<<<<< HEAD
+
                                              name, params, idents, body );
       } else if (jj_2_3(2147483647)) {
-=======
-                                             name, params, null, body );
-      } else if (jj_2_2(2147483647)) {
->>>>>>> AddDouble
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case VOID:
-          jj_consume_token(VOID);
-                         type = Type.VOID;
-          break;
-        case BOOLEAN:
-        case CHAR:
-        case INT:
-        case IDENTIFIER:
-          type = type();
-          break;
-        default:
-          jj_la1[9] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-              line = token.beginLine;
-        jj_consume_token(IDENTIFIER);
-                           name = token.image;
-        params = formalParameters();
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case THROWS:
-          jj_consume_token(THROWS);
-          idents = throwsIdentifiers();
-          break;
-        default:
-          jj_la1[10] = jj_gen;
-          ;
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case LCURLY:
-          body = block();
-          break;
-        case SEMI:
-          jj_consume_token(SEMI);
-          break;
-        default:
-          jj_la1[11] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-                memberDecl =
-                   new JMethodDeclaration( line, mods, name,
-<<<<<<< HEAD
-                                           type, params, idents, body );
-=======
-                                           type, params, null, body );
->>>>>>> AddDouble
+
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BOOLEAN:
