@@ -2,11 +2,6 @@ package junit;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
-<<<<<<< HEAD
-import pass.Remainder;
-=======
-import pass.DoubleBasicDataType;
->>>>>>> master
 
 public class CompilerOutputTest {
 
@@ -32,18 +27,15 @@ public class CompilerOutputTest {
 		suite.addTestSuite(SeriesTest.class);
 		suite.addTestSuite(SubtractTest.class);
 		suite.addTestSuite(UnaryPlusTest.class);
-		
-<<<<<<< HEAD
-		suite.addTestSuite(MultiLinesCommentTest.class);
+
 		suite.addTestSuite(RemainderTest.class);
-		suite.addTestSuite(InterfaceTest.class);
+//		suite.addTestSuite(InterfaceTest.class);
 		suite.addTestSuite(LogicalOrTest.class);
-=======
 		suite.addTestSuite(DoubleTypeTest.class);
 		suite.addTestSuite(CondtionalTest.class);
-		suite.addTestSuite(PostfixAndPrefixTest.class);
-		suite.addTestSuite(ForTest.class);
->>>>>>> master
+//		suite.addTestSuite(PostfixAndPrefixTest.class);
+//		suite.addTestSuite(ForTest.class);
+
 		//$JUnit-END$
 		return suite;
 	}
