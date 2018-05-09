@@ -407,52 +407,10 @@ class JavaCCParser implements JavaCCParserConstants {
         body = block();
                 memberDecl =
                 new JConstructorDeclaration( line, mods,
+
                                              name, params, idents, body );
       } else if (jj_2_3(2147483647)) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case VOID:
-          jj_consume_token(VOID);
-                         type = Type.VOID;
-          break;
-        case BOOLEAN:
-        case CHAR:
-        case INT:
-        case IDENTIFIER:
-          type = type();
-          break;
-        default:
-          jj_la1[9] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-              line = token.beginLine;
-        jj_consume_token(IDENTIFIER);
-                           name = token.image;
-        params = formalParameters();
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case THROWS:
-          jj_consume_token(THROWS);
-          idents = throwsIdentifiers();
-          break;
-        default:
-          jj_la1[10] = jj_gen;
-          ;
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case LCURLY:
-          body = block();
-          break;
-        case SEMI:
-          jj_consume_token(SEMI);
-          break;
-        default:
-          jj_la1[11] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-                memberDecl =
-                   new JMethodDeclaration( line, mods, name,
-                                           type, params, idents, body );
+
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case BOOLEAN:
@@ -1216,7 +1174,7 @@ class JavaCCParser implements JavaCCParserConstants {
         case MINUS_ASSIGN:
           jj_consume_token(MINUS_ASSIGN);
           rhs = assignmentExpression();
-              lhs = new JSubtractAssignOp( line, lhs, rhs );
+              lhs = new JMinusAssignOp( line, lhs, rhs );
           break;
         case STAR_ASSIGN:
           jj_consume_token(STAR_ASSIGN);

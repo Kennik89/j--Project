@@ -31,14 +31,18 @@ class JThrowStatement
     }
 
     /**
+<<<<<<< HEAD
      * Analyze throw statement by checking that the expr is of type Throwable
      * 
+=======
+>>>>>>> AddDouble
      * @param context
      *                context in which names are resolved.
      * @return the analyzed (and possibly rewritten) AST subtree.
      */
 
     public JStatement analyze(Context context) {
+
         expr = (JExpression) expr.analyze(context);
         Type type = expr.type();
         if ((type != null) && (type.classRep() != null)) {
@@ -47,6 +51,7 @@ class JThrowStatement
                         "Throw type %s is not a subtype of %s", type, Type.THROWABLE);
             }
         }
+
         return this;
     }
 
@@ -57,8 +62,10 @@ class JThrowStatement
      */
 
     public void codegen(CLEmitter output) {
+
         expr.codegen(output);
         output.addNoArgInstruction(ATHROW);
+
     }
 
     /**

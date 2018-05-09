@@ -1,5 +1,5 @@
-package pass.step2;
-
-public class LogicalOrOperator {
-
-}
+//package pass.step2;
+//
+//public class LogicalOrOperator {
+//
+//}

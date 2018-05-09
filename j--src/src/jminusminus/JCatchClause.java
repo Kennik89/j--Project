@@ -21,12 +21,15 @@ class JCatchClause extends JAST {
     private JBlock block;
 
     /**
+<<<<<<< HEAD
      * The new context and vardefn (built in analyze()) for the formal parameter.
      */
     private LocalContext context;
     private LocalVariableDefn vardefn;
 
     /**
+=======
+>>>>>>> AddDouble
      * Construct an AST node for a catch clause declaration given its line
      * number, formal parameter declaration, and block.
      * 
@@ -55,6 +58,7 @@ class JCatchClause extends JAST {
     }
 
     /**
+<<<<<<< HEAD
      * Return the type.
      * 
      * @return the type.
@@ -65,6 +69,8 @@ class JCatchClause extends JAST {
     }
 
     /**
+=======
+>>>>>>> AddDouble
      * Return the block.
      * 
      * @return the block.
@@ -81,6 +87,7 @@ class JCatchClause extends JAST {
      */
 
     public JAST analyze(Context context) {
+
         type = param.type().resolve(context);
         if ((type != null) && (type.classRep() != null)) {
             if (!Type.THROWABLE.isJavaAssignableFrom(type)) {
@@ -95,6 +102,7 @@ class JCatchClause extends JAST {
         this.context.addEntry(param.line(), param.name(), this.vardefn);
 
         block = block.analyze(this.context);
+
         return this;
     }
 
@@ -105,8 +113,10 @@ class JCatchClause extends JAST {
      */
 
     public void codegen(CLEmitter output) {
+
         output.addOneArgInstruction(ASTORE, this.vardefn.offset());
         block.codegen(output);
+
     }
 
     /**
