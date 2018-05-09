@@ -698,7 +698,7 @@ public class Parser {
 	    mustBe(SEMI);
 	    JExpression condition = expression();
 	    mustBe(SEMI);
-	    JStatementExpression incrementer = new JStatementExpression(line, expression());
+	    JStatementExpression incrementer = statementExpression();
 	    mustBe(RPAREN);
 	    JStatement body = statement();
 	    return new JForLoop(line, for_decl, condition, incrementer, body);
