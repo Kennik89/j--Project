@@ -1243,6 +1243,8 @@ private JStatement statementExpression(): {
             if ( expr instanceof JAssignment
               || expr instanceof JPreIncrementOp
               || expr instanceof JPostDecrementOp
+			  || expr instanceof JPostIncrementOp
+			  || expr instanceof JPreIncrementOp
               || expr instanceof JMessageExpression
               || expr instanceof JSuperConstruction
               || expr instanceof JThisConstruction 
@@ -1546,6 +1548,12 @@ private JExpression relationalExpression(): {
             <LE> 
             rhs = shiftExpression()
             { lhs = new JLessEqualOp( line, lhs, rhs ); } |
+			<GE>
+            rhs = shiftExpression()
+            { lhs = new JGreaterEqualOp( line, lhs, rhs ); } |
+			<LT>
+            rhs = shiftExpression()
+            { lhs = new JLessOp( line, lhs, rhs ); } |
             <INSTANCEOF> 
             type = referenceType()
             { lhs = new JInstanceOfOp( line, lhs, type ); }
@@ -1690,6 +1698,8 @@ private JExpression unaryExpression(): {
         <INC> { line = token.beginLine; }
         unaryExpr = unaryExpression()
         { expr = new JPreIncrementOp( line, unaryExpr ); } | 
+        <DEC> { line = token.beginLine; }
+        { expr = new JPreDecrementOp( line, unaryExpr ); } | 
         <MINUS> { line = token.beginLine; }
         unaryExpr = unaryExpression()
         { expr = new JNegateOp( line, unaryExpr ); } |
@@ -1777,6 +1787,10 @@ private JExpression postfixExpression(): {
             <DEC> 
             { primaryExpr = 
                 new JPostDecrementOp( line, primaryExpr ); } 
+
+            <INC> 
+            { primaryExpr = 
+                new JPostIncrementOp( line, primaryExpr ); } 
         )*
     } 
     catch ( ParseException e ) {
