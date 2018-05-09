@@ -1086,11 +1086,7 @@ public class Parser {
 
     private JExpression assignmentExpression() {
         int line = scanner.token().line();
-<<<<<<< HEAD
         JExpression lhs = conditionalOrExpression();
-=======
-        JExpression lhs = conditionalExpression();
->>>>>>> master
         if (have(ASSIGN)) {
             return new JAssignOp(line, lhs, assignmentExpression());
         } else if (have(PLUS_ASSIGN)) {
@@ -1136,11 +1132,7 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
-<<<<<<< HEAD
                 lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
-=======
-
->>>>>>> master
             } else {
                 more = false;
             }

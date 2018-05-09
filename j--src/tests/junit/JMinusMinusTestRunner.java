@@ -24,12 +24,8 @@ public class JMinusMinusTestRunner {
         suite.addTestSuite(RemainderTest.class);
         suite.addTestSuite(SeriesTest.class);
         suite.addTestSuite(MultiLinesCommentTest.class);
-<<<<<<< HEAD
         suite.addTestSuite(LogicalOrTest.class);
-=======
-        
-       suite.addTestSuite(DoubleTypeTest.class);
->>>>>>> master
+        suite.addTestSuite(DoubleTypeTest.class);
         return suite;
     }
 
