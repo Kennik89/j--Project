@@ -683,18 +683,12 @@ public class Parser {
 			JStatement statement = statement();
 			return new JWhileStatement(line, test, statement);
 		} else if(have(FOR)) {
-			//Int can be initialized before				
 			mustBe(LPAREN);
-			mustBe(INT);
 			JVariableDeclarator for_decl = variableDeclarator(Type.INT);
 			mustBe(SEMI);
 			JExpression condition = expression();
-			PrettyPrinter p = new PrettyPrinter();
-			//condition.writeToStdOut(p);
 			mustBe(SEMI);
-			System.out.println("HERE -------------------- ");
 			JStatementExpression incrementer = new JStatementExpression(line, expression());
-			incrementer.writeToStdOut(p);
 			mustBe(RPAREN);
 			JStatement body = statement();
 			return new JForLoop(line, for_decl, condition, incrementer, body);
@@ -1377,6 +1371,7 @@ public class Parser {
 	 *
 	 * <pre>
 	 *   unaryExpression ::= INC unaryExpression // level 1
+	 *                     | DEC unaryExpression
 	 *                     | MINUS unaryExpression
 	 *                     | PLUS unaryExpression
 	 *                     | BNOT unaryExpression
@@ -1455,7 +1450,6 @@ public class Parser {
 		while (have(DEC)) {
 			primaryExpr = new JPostDecrementOp(line, primaryExpr);
 		}
-
 		while(have(INC)) {
 			primaryExpr = new JPostIncrementOp(line, primaryExpr);
 		}

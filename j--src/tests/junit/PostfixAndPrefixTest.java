@@ -19,7 +19,6 @@ public class PostfixAndPrefixTest extends TestCase {
 	public void testPostFix() {
 		int[] XandY_postfixinc = prepostfix.PostfixInc(x, y);
 		int[] XandY_postfixdec = prepostfix.PostfixDec(x, y);
-		System.out.println(x + " " + y);
 		assertEquals(XandY_postfixinc[0], 5);
 		assertEquals(XandY_postfixinc[1], 6);
 		assertEquals(XandY_postfixdec[0], 5);

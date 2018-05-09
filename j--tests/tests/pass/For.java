@@ -1,21 +1,22 @@
 package pass;
 
+import java.lang.System;
+
 public class For {
 
-    public static int testfor(int y) {
-    	int counter = y;
+    public static int testfor() {
+    	int counter = 0;
+    	int x = 0;
     	
-        for(int x=1; y<11; y++){
-        	counter++;
+        for(x=0; x<11; ++x){
+        	counter += 1;
        }
         return counter;
     }
 	
 	public static void main(String[] args) {
-		int y = 1;
-		int counter = testfor(1); //Interates 10 times
-		
-
+		int counter = testfor();
+		System.out.println(counter);
 	}
 
 }

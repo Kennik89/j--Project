@@ -2,6 +2,8 @@ package jminusminus;
 
 import static jminusminus.CLConstants.GOTO;
 
+import junit.framework.Assert;
+
 public class JForLoop extends JStatement {
 	
     //private JStatementExpression for_decl;
@@ -13,6 +15,7 @@ public class JForLoop extends JStatement {
     
 	public JForLoop(int line, JVariableDeclarator for_decl, JExpression condition, JStatementExpression incrementer, JStatement body) {
 		super(line);
+		//JStatement body)
 		this.for_decl = for_decl;
 		this.condition = condition;
 		this.incrementer = incrementer;
@@ -40,12 +43,7 @@ public class JForLoop extends JStatement {
     		error_printer("For_Condition: Expected to find Boolean but did not");
 
     	incrementer = (JStatementExpression) incrementer.analyze(context);
-    	Type inct = incrementer.expr.type();
-    	System.out.println(inct);
-    	
-    	if(!(incrementer.expr.type() == Type.INT))
-    		error_printer("For_Incrementer: Expected to find INT but did not");
-    	
+
     	body = (JStatement) body.analyze(context);
     	
     	return this;
@@ -63,6 +61,20 @@ public class JForLoop extends JStatement {
 
     public void codegen(CLEmitter output) {
     	
+        String condition_Label = output.createLabel();
+        String endLabel = output.createLabel();
+
+        output.addLabel(condition_Label);
+        condition.codegen(output, endLabel, false);
+        
+        if(condition != null) {
+            body.codegen(output);
+            //incrementer.codegen(output);
+            output.addBranchInstruction(GOTO, condition_Label);
+        } else {
+            output.addBranchInstruction(GOTO, endLabel);
+        }
+        output.addLabel(endLabel);    	
     }
 
     /**
