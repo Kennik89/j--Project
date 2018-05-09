@@ -264,6 +264,9 @@ class JClassDeclaration extends JAST implements JTypeDecl {
         // The implicit empty constructor?
         if (isClass && !hasExplicitConstructor) {
             codegenImplicitConstructor(output);
+        } else if (!isClass && hasExplicitConstructor)	{
+        	JAST.compilationUnit.reportSemanticError(line,
+                    "Interface should not contain a constructor", output);
         }
 
         // The members
