@@ -1,5 +1,5 @@
-//package pass.step2;
-//
-//public class TwoKindsOfForLoops {
-//
-//}
+package pass.step2;
+
+public class TwoKindsOfForLoops {
+
+}

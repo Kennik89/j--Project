@@ -466,6 +466,7 @@ class Scanner {
             nextCh();
             return new TokenInfo(BIOR_ASSIGN, line);
 		} else if (ch == '|') {
+			nextCh();
             return new TokenInfo(LOR, line);
         } else {
 			return new TokenInfo(BIOR, line);

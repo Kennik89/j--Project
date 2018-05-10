@@ -20,7 +20,7 @@ public class Parser {
     /** Whether a parser error has been found. */
     private boolean isInError;
 
-    /** Wheter we have recovered from a parser error. */
+    /** Whether we have recovered from a parser error. */
     private boolean isRecovered;
 
     /**
@@ -46,6 +46,7 @@ public class Parser {
     public boolean errorHasOccurred() {
         return isInError;
     }
+
 
     // ////////////////////////////////////////////////
     // Parsing Support ///////////////////////////////
@@ -473,10 +474,10 @@ public class Parser {
     }
 
     /**
-     * Parse a class declaration.
+     * Parse a class/interface declaration.
      *
      * <pre>
-     *   classDeclaration ::= CLASS IDENTIFIER
+     *   classDeclaration ::= (CLASS | INTERFACE) IDENTIFIER
      *                        [EXTENDS qualifiedIdentifier]
      *                        classBody
      * </pre>
@@ -491,7 +492,13 @@ public class Parser {
 
     private JClassDeclaration classDeclaration(ArrayList<String> mods) {
         int line = scanner.token().line();
-        mustBe(CLASS);
+        boolean isClass;
+        if (have(CLASS))	{
+        	isClass = true;
+        } else {
+        	mustBe(INTERFACE);
+        	isClass = false;
+        }
         mustBe(IDENTIFIER);
         String name = scanner.previousToken().image();
         Type superClass;
@@ -500,7 +507,7 @@ public class Parser {
         } else {
             superClass = Type.OBJECT;
         }
-        return new JClassDeclaration(line, mods, name, superClass, classBody());
+        return new JClassDeclaration(line, mods, isClass, name, superClass, classBody());
     }
 
     /**
@@ -535,7 +542,7 @@ public class Parser {
      *                | (VOID | type) IDENTIFIER  // method
      *                    formalParameters
      *                    (block | SEMI)
-     *                | type variableDeclarators SEMI
+     *                | type variableDeclarators SEMI // field
      * </pre>
      *
      * @param mods
@@ -595,11 +602,11 @@ public class Parser {
 
     /**
      * Parse throws identifiers.
-     * 
+     *
      * <pre>
      *   throwsIdentifiers ::= qualifiedIdentifier {COMMA qualifiedIdentifier}
      * </pre>
-     * 
+     *
      * @return a list of throws identifiers.
      */
 
@@ -665,7 +672,7 @@ public class Parser {
      *               | THROW expression SEMI
      *               | TRY block catchClause {catchClause}
      *               | TRY block {catchClause} FINALLY block
-     *               | SEMI 
+     *               | SEMI
      *               | statementExpression SEMI
      * </pre>
      *
@@ -685,7 +692,17 @@ public class Parser {
             JExpression test = parExpression();
             JStatement statement = statement();
             return new JWhileStatement(line, test, statement);
-        } else if (have(RETURN)) {
+        } else if(have(FOR)) {
+	    mustBe(LPAREN);
+	    JVariableDeclarator for_decl = variableDeclarator(Type.INT);
+	    mustBe(SEMI);
+	    JExpression condition = expression();
+	    mustBe(SEMI);
+	    JStatementExpression incrementer = (JStatementExpression) statementExpression();
+	    mustBe(RPAREN);
+	    JStatement body = statement();
+	    return new JForLoop(line, for_decl, condition, incrementer, body);
+	} else if (have(RETURN)) {
             if (have(SEMI)) {
                 return new JReturnStatement(line, null);
             } else {
@@ -720,11 +737,11 @@ public class Parser {
 
     /**
      * Parse catch clause.
-     * 
+     *
      * <pre>
      *   catchClause ::= LPAREN formalParameter RPAREN block
      * </pre>
-     * 
+     *
      * @return a catch clause.
      */
 
@@ -1020,8 +1037,11 @@ public class Parser {
     private JStatement statementExpression() {
         int line = scanner.token().line();
         JExpression expr = expression();
-        if (expr instanceof JAssignment || expr instanceof JPreIncrementOp
-                || expr instanceof JPostDecrementOp
+	if (expr instanceof JAssignment 
+		|| expr instanceof JPreIncrementOp
+		|| expr instanceof JPreDecrementOp
+		|| expr instanceof JPostDecrementOp
+		|| expr instanceof JPostIncrementOp  
                 || expr instanceof JMessageExpression
                 || expr instanceof JSuperConstruction
                 || expr instanceof JThisConstruction || expr instanceof JNewOp
@@ -1054,7 +1074,7 @@ public class Parser {
      *
      * <pre>
      *   assignmentExpression ::=
-     *       conditionalAndExpression // level 13
+     *       conditionalOrExpression // level 13
      *           [( ASSIGN  // conditionalExpression
      *            | PLUS_ASSIGN // must be valid lhs
      *            )
@@ -1096,10 +1116,10 @@ public class Parser {
      */
     private JExpression conditionalExpression() {
     	int line = scanner.token().line();
-    	JExpression cond = conditionalAndExpression();
+    	JExpression cond = conditionalOrExpression();
     	
     	if(have(QM)) {
-    		JExpression lhs = conditionalAndExpression();
+    		JExpression lhs = conditionalOrExpression();
     		mustBe(COLON);
     		return new JConditionalExpression(line, cond, lhs, conditionalExpression());
     	}
@@ -1112,7 +1132,7 @@ public class Parser {
         JExpression lhs = conditionalAndExpression();
         while (more) {
             if (have(LOR)) {
-
+                lhs = new JLogicalOrOp(line, lhs, conditionalAndExpression());
             } else {
                 more = false;
             }
@@ -1386,7 +1406,9 @@ public class Parser {
         int line = scanner.token().line();
         if (have(INC)) {
             return new JPreIncrementOp(line, unaryExpression());
-        } else if (have(MINUS)) {
+        } else if(have(DEC)){
+	    return new JPreDecrementOp(line, unaryExpression());
+	} else if (have(MINUS)) {
             return new JNegateOp(line, unaryExpression());
         } else if (have(PLUS)) {
             return new JPositiveOp(line, unaryExpression());
@@ -1449,6 +1471,9 @@ public class Parser {
         while (have(DEC)) {
             primaryExpr = new JPostDecrementOp(line, primaryExpr);
         }
+	while(have(INC)) {
+	    primaryExpr = new JPostIncrementOp(line, primaryExpr);
+	}
         return primaryExpr;
     }
 

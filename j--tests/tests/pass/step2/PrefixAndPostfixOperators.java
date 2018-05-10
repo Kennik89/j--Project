@@ -1,5 +1,5 @@
-//package pass.step2;
-//
-//public class PrefixAndPostfixOperators {
-//
-//}
+package pass.step2;
+
+public class PrefixAndPostfixOperators {
+
+}

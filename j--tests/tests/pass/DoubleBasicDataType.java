@@ -14,9 +14,10 @@ public class DoubleBasicDataType {
 		return x;
 	}
 	
-	public double[] correctMethodsParamsValues(double x,double y) {
-		return new double[] {x,y};
-	}
+//	public double[] correctMethodsParamsValues(double x,double y) {
+//		double[] a = {x,y};
+//		return a;
+//	}
 	
 	
 	
@@ -65,7 +66,7 @@ public class DoubleBasicDataType {
 	
 	public double remainder(double mod, double value) {	return mod % value;	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args ) {
 		
 		double a = 1.5;
 		double b=5.0;

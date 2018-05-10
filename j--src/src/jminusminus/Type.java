@@ -277,12 +277,25 @@ class Type {
     }
 
     /**
+     * Return a list of this class' abstract methods? It does has abstract
+     * methods if (1) Any method declared in the class is abstract, or (2) Its
+     * superclass has an abstract method which is not overridden here.
+     * 
+     * @return a list of abstract methods.
+     */
+
+    public ArrayList<Method> concretMethods() { 
+
+        return declaredConcreteMethods();
+    }
+    
+    /**
      * Return a list of this class' declared concrete methods.
      * 
      * @return a list of declared concrete methods.
      */
 
-    private ArrayList<Method> declaredConcreteMethods() {
+    public ArrayList<Method> declaredConcreteMethods() { // Changed from private to public
         ArrayList<Method> declaredConcreteMethods = new ArrayList<Method>();
         for (java.lang.reflect.Method method : classRep.getDeclaredMethods()) {
             if (!Modifier.isAbstract(method.getModifiers())) {

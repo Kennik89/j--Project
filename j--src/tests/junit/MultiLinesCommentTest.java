@@ -14,9 +14,8 @@ public class MultiLinesCommentTest {
 //	}
 
 	public void testMultiLinesCommentTest() {
-		/*
-		assertFalse();
-		*/
+
+		assertTrue(true);
 
 	}
 
