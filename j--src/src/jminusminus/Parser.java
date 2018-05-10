@@ -419,16 +419,20 @@ public class Parser {
      * @return a list of modifiers.
      */
 
-    private ArrayList<String> modifiers() {
+    private ArrayList<String> modifiers()	{
+    	return modifiers(true);
+    }
+    
+    private ArrayList<String> modifiers(boolean isClass) {
         ArrayList<String> mods = new ArrayList<String>();
         boolean scannedPUBLIC = false;
         boolean scannedPROTECTED = false;
         boolean scannedPRIVATE = false;
         boolean scannedSTATIC = false;
-        boolean scannedABSTRACT = false;
+        boolean scannedABSTRACT = !isClass;	// All methods are abstract is the class is an Interface
         boolean more = true;
         while (more)
-            if (have(PUBLIC)) {
+        	if (have(PUBLIC)) {
                 mods.add("public");
                 if (scannedPUBLIC) {
                     reportParserError("Repeated modifier: public");
@@ -463,11 +467,19 @@ public class Parser {
                 scannedSTATIC = true;
             } else if (have(ABSTRACT)) {
                 mods.add("abstract");
-                if (scannedABSTRACT) {
+                if (!isClass) {
+                	reportParserError("All methods in Interface are autmatically abstract");
+                } else if(scannedABSTRACT) {
                     reportParserError("Repeated modifier: abstract");
                 }
                 scannedABSTRACT = true;
             } else {
+            	if(see(INTERFACE))	{
+            		mods.add("abstract");
+                    if (scannedABSTRACT) {
+                        reportParserError("Interface is already an abstract class type");
+                    }
+            	}
                 more = false;
             }
         return mods;
@@ -507,7 +519,7 @@ public class Parser {
         } else {
             superClass = Type.OBJECT;
         }
-        return new JClassDeclaration(line, mods, isClass, name, superClass, classBody());
+        return new JClassDeclaration(line, mods, isClass, name, superClass, classBody(isClass));
     }
 
     /**
@@ -522,11 +534,11 @@ public class Parser {
      * @return list of members in the class body.
      */
 
-    private ArrayList<JMember> classBody() {
+    private ArrayList<JMember> classBody(boolean isClass) {
         ArrayList<JMember> members = new ArrayList<JMember>();
         mustBe(LCURLY);
         while (!see(RCURLY) && !see(EOF)) {
-            members.add(memberDecl(modifiers()));
+            members.add(memberDecl(modifiers(isClass)));
         }
         mustBe(RCURLY);
         return members;
