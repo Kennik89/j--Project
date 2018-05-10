@@ -262,7 +262,7 @@ class JMultiplyOp extends JBinaryExpression {
 
 	public void codegen(CLEmitter output) {
 		if 		(type == Type.INT) binaryCodegen(output, IMUL);
-		else if (type == Type.INT) binaryCodegen(output, DMUL);
+		else if (type == Type.DOUBLE) binaryCodegen(output, DMUL);
 	}
 
 }
@@ -321,7 +321,9 @@ class JDivideOp extends JBinaryExpression {
 	public void codegen(CLEmitter output) {
 		lhs.codegen(output);
 		rhs.codegen(output);
-		output.addNoArgInstruction(IDIV);
+		if		(type == Type.INT)		output.addNoArgInstruction(IDIV);
+		else if (type == Type.DOUBLE)	output.addNoArgInstruction(DDIV);
+
 	}
 
 }
@@ -379,7 +381,7 @@ class JRemainderOp extends JBinaryExpression {
 
 	public void codegen(CLEmitter output) {
 		if 		(type == Type.INT)	binaryCodegen(output, IREM);	
-		else if (type == Type.INT)	binaryCodegen(output, DREM);
+		else if (type == Type.DOUBLE)	binaryCodegen(output, DREM);
 	}
 
 }
