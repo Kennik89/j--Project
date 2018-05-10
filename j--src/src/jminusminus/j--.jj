@@ -1246,10 +1246,10 @@ private JStatement statementExpression(): {
         {
             line = expr.line();
             if ( expr instanceof JAssignment
-              || expr instanceof JPreIncrementOp
+	      || expr instanceof JPreIncrementOp
+              || expr instanceof JPreDecrementOp
               || expr instanceof JPostDecrementOp
-			  || expr instanceof JPostIncrementOp
-			  || expr instanceof JPreIncrementOp
+	      || expr instanceof JPostIncrementOp
               || expr instanceof JMessageExpression
               || expr instanceof JSuperConstruction
               || expr instanceof JThisConstruction 
@@ -1585,10 +1585,10 @@ private JExpression relationalExpression(): {
             <LE> 
             rhs = shiftExpression()
             { lhs = new JLessEqualOp( line, lhs, rhs ); }       |
-			<GE>
+	    <GE>
             rhs = shiftExpression()
             { lhs = new JGreaterEqualOp( line, lhs, rhs ); }    |
-			<LT>
+	    <LT>
             rhs = shiftExpression()
             { lhs = new JLessOp( line, lhs, rhs ); }            |
             <INSTANCEOF> 
@@ -1823,7 +1823,7 @@ private JExpression postfixExpression(): {
         ( 
             <DEC> 
             { primaryExpr = 
-                new JPostDecrementOp( line, primaryExpr ); } 
+                new JPostDecrementOp( line, primaryExpr ); } |
 
             <INC> 
             { primaryExpr = 
