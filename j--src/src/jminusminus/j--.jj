@@ -615,11 +615,9 @@ private JMember memberDecl( ArrayList<String>  mods ): {
             { 
                 memberDecl = 
                 new JConstructorDeclaration( line, mods, 
-                                             name, params, idents, body );
-<<<<<<< HEAD
 
-=======
->>>>>>> ed4530bb251ee3cc6c38036435c3d4cea41dc568
+                                             name, params, idents, body );
+
             }
         ) |     
         LOOKAHEAD( ( <VOID> | type() ) <IDENTIFIER> <LPAREN> )
@@ -640,15 +638,9 @@ private JMember memberDecl( ArrayList<String>  mods ): {
                 <SEMI> 
             )
             { 
-                memberDecl = 
-<<<<<<< HEAD
-                   new JMethodDeclaration( line, mods, name, 
+                memberDecl = new JMethodDeclaration( line, mods, name,
                                            type, params, idents, body ); 
 
-=======
-                   new JMethodDeclaration( line, mods, name,
-                                           type, params, idents, body ); 
->>>>>>> ed4530bb251ee3cc6c38036435c3d4cea41dc568
             } 
         ) | 
         ( 
@@ -1188,10 +1180,10 @@ private Type basicType(): {
 }
 {
     try {
-        <BOOLEAN> { type = Type.BOOLEAN; }  |
-        <CHAR> { type = Type.CHAR; }        |
-        <INT> { type = Type.INT; }          |
-        <DOUBLE> { type = Type.DOUBLE; }
+        <BOOLEAN>	{ type = Type.BOOLEAN; }  |
+        <CHAR> 		{ type = Type.CHAR; }     |
+        <INT> 		{ type = Type.INT; }      |
+        <DOUBLE> 	{ type = Type.DOUBLE; }
     } 
     catch ( ParseException e ) { 
         recoverFromError( new int[] { SEMI, EOF }, e ); 
@@ -1306,11 +1298,9 @@ private JExpression expression(): {
  * 
  * <pre>
  *   assignmentExpression ::= 
-<<<<<<< HEAD
+
  *       conditionalExpression // level 14
-=======
- *       conditionalOrExpression // level 13
->>>>>>> ed4530bb251ee3cc6c38036435c3d4cea41dc568
+*
  *           [( ASSIGN  // conditionalExpression
  *            | PLUS_ASSIGN // must be valid lhs
  *            | MINUS_ASSIGN // must be valid lhs
@@ -1330,11 +1320,9 @@ private JExpression assignmentExpression(): {
 }
 {
     try {
-<<<<<<< HEAD
+
         lhs = conditionalExpression() { line = lhs.line(); }
-=======
-        lhs = conditionalOrExpression() { line = lhs.line(); }
->>>>>>> ed4530bb251ee3cc6c38036435c3d4cea41dc568
+
         [       
             <ASSIGN> 
             rhs = assignmentExpression()
@@ -1362,7 +1350,7 @@ private JExpression assignmentExpression(): {
     { return lhs; }
 }
 /**
-*	condtionExpression:= andExpression [ ? andExpression : conditionExpression ] 
+*	condtionExpression:= orExpression [ ? orExpression : conditionExpression ] 
 *
 *
 **/
@@ -1373,13 +1361,13 @@ private JExpression conditionalExpression():{
 }
 {
 	try {
-        test = conditionalAndExpression() {line = test.line();}
+        test = conditionalOrExpression() {line = test.line();}
         [
             <QM>
-            lhs = conditionalAndExpression()
+            lhs = conditionalOrExpression()
             <COLON>
             rhs = conditionalExpression()
-            { return new JConditionalExpression(line,test,lhs,rhs); }
+            { test = new JConditionalExpression(line,test,lhs,rhs); }
         ]
     
     }
@@ -1593,16 +1581,16 @@ private JExpression relationalExpression(): {
         [ 
             <GT> 
             rhs = shiftExpression()
-            { lhs = new JGreaterThanOp( line, lhs, rhs ); } |
+            { lhs = new JGreaterThanOp( line, lhs, rhs ); }     |
             <LE> 
             rhs = shiftExpression()
-            { lhs = new JLessEqualOp( line, lhs, rhs ); } |
+            { lhs = new JLessEqualOp( line, lhs, rhs ); }       |
 			<GE>
             rhs = shiftExpression()
-            { lhs = new JGreaterEqualOp( line, lhs, rhs ); } |
+            { lhs = new JGreaterEqualOp( line, lhs, rhs ); }    |
 			<LT>
             rhs = shiftExpression()
-            { lhs = new JLessOp( line, lhs, rhs ); } |
+            { lhs = new JLessOp( line, lhs, rhs ); }            |
             <INSTANCEOF> 
             type = referenceType()
             { lhs = new JInstanceOfOp( line, lhs, type ); }
@@ -2079,17 +2067,17 @@ private JExpression literal(): {
 {       
     try {
         <INT_LITERAL> 
-        { expr = new JLiteralInt( token.beginLine, token.image ); } | 
+        { expr = new JLiteralInt( token.beginLine, token.image ); }     | 
         <DOUBLE_LITERAL> 
-        { expr = new JLiteralDouble( token.beginLine, token.image ); } | 
+        { expr = new JLiteralDouble( token.beginLine, token.image ); }  | 
         <CHAR_LITERAL> 
-        { expr = new JLiteralChar( token.beginLine, token.image ); } |
+        { expr = new JLiteralChar( token.beginLine, token.image ); }    |
         <STRING_LITERAL> 
-        { expr = new JLiteralString( token.beginLine, token.image ); } | 
+        { expr = new JLiteralString( token.beginLine, token.image ); }  | 
         <TRUE> 
-        { expr = new JLiteralTrue( token.beginLine ); } | 
+        { expr = new JLiteralTrue( token.beginLine ); }                 | 
         <FALSE> 
-        { expr = new JLiteralFalse( token.beginLine ); } |
+        { expr = new JLiteralFalse( token.beginLine ); }                |
         <NULL> 
         { expr = new JLiteralNull( token.beginLine ); }
     } 
