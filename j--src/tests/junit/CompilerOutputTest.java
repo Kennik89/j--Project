@@ -29,17 +29,11 @@ public class CompilerOutputTest {
 		suite.addTestSuite(SubtractTest.class);
 		suite.addTestSuite(UnaryPlusTest.class);
 
-
 		suite.addTestSuite(LogicalOrTest.class);
-
-
-		suite.addTestSuite(LogicalOrTest.class);
-
 		suite.addTestSuite(DoubleTypeTest.class);
 		suite.addTestSuite(CondtionalTest.class);
-
-		//suite.addTestSuite(PostfixAndPrefixTest.class);
-		//suite.addTestSuite(ForTest.class);
+		suite.addTestSuite(PostfixAndPrefixTest.class);
+		suite.addTestSuite(ForTest.class);
 
 		//$JUnit-END$
 		return suite;
