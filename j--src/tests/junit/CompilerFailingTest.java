@@ -8,48 +8,17 @@ import jminusminus.Main;
 
 /**
  * JUnit test case for running the j-- compiler on the j-- test programs under
- * tests/pass and tests/fail folders.
+ * files/fail folder.
  */
 
-public class JMinusMinusTest extends TestCase {
+public class CompilerFailingTest extends TestCase {
 
     /**
-     * Construct a JMinusMinusTest object.
+     * Construct a CompilerFailingTest object.
      */
 
-    public JMinusMinusTest() {
+    public CompilerFailingTest() {
         super("JUnit test case for the j-- compiler");
-    }
-
-    /**
-     * Run the j-- compiler against each pass-test file under the folder
-     * specified by PASS_TESTS_DIR property in the build.xml file. FRONT_END
-     * property determines the frontend (handwritten or JavaCC) to use.
-     */
-
-    public void xtestPass() {
-        File passTestsDir = new File(System.getProperty("PASS_TESTS_DIR"));
-        File genClassDir = new File(System.getProperty("GEN_CLASS_DIR"));
-        File[] files = passTestsDir.listFiles();
-        boolean errorHasOccurred = false;
-        for (int i = 0; files != null && i < files.length; i++) {
-            if (files[i].toString().endsWith(".java")) {
-                String[] args = null;
-                System.out.printf("Running j-- (with "
-                        + "handwritten frontend) on %s ...\n\n", files[i]
-                        .toString());
-                args = new String[] { "-d", genClassDir.getAbsolutePath(),
-                        files[i].toString() };
-                Main.main(args);
-                System.out.printf("\n\n");
-
-                // true even if a single test fails
-                errorHasOccurred |= Main.errorHasOccurred();
-            }
-        }
-
-        // We want all tests to pass
-        assertFalse(errorHasOccurred);
     }
 
     /**
@@ -91,7 +60,7 @@ public class JMinusMinusTest extends TestCase {
      */
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(JMinusMinusTest.class);
+        junit.textui.TestRunner.run(CompilerFailingTest.class);
     }
 
 }

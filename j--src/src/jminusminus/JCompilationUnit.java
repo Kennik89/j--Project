@@ -127,7 +127,12 @@ class JCompilationUnit extends JAST {
             Object... arguments) {
         isInError = true;
         System.err.printf("%s:%d: ", fileName, line);
-        System.err.printf(message, arguments);
+        if (arguments != null) {
+            System.err.printf(message, arguments);
+        }
+        else {
+            System.err.printf(message);
+        }
         System.err.println();
     }
 
