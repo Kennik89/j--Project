@@ -2272,19 +2272,6 @@ class JavaCCParser implements JavaCCParserConstants {
     return false;
   }
 
-<<<<<<< HEAD
-  final private boolean jj_3R_45() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_49()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-=======
->>>>>>> refs/remotes/origin/master
   final private boolean jj_3R_124() {
     if (jj_scan_token(LPAREN)) return true;
     Token xsp;
@@ -2299,15 +2286,12 @@ class JavaCCParser implements JavaCCParserConstants {
     return false;
   }
 
-<<<<<<< HEAD
-=======
   final private boolean jj_3_4() {
     if (jj_3R_30()) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
->>>>>>> refs/remotes/origin/master
   final private boolean jj_3R_127() {
     if (jj_scan_token(DOUBLE_LITERAL)) return true;
     return false;
