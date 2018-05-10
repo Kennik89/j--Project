@@ -1717,6 +1717,7 @@ private JExpression multiplicativeExpression(): {
  * 
  * <pre>
  *   unaryExpression ::= INC unaryExpression // level 1
+ *					   | DEC unaryExpression
  *                     | MINUS unaryExpression
  *                     | PLUS unaryExpression
  *                     | BNOT unaryExpression
@@ -1736,6 +1737,7 @@ private JExpression unaryExpression(): {
         unaryExpr = unaryExpression()
         { expr = new JPreIncrementOp( line, unaryExpr ); } | 
         <DEC> { line = token.beginLine; }
+        unaryExpr = unaryExpression()
         { expr = new JPreDecrementOp( line, unaryExpr ); } | 
         <MINUS> { line = token.beginLine; }
         unaryExpr = unaryExpression()
