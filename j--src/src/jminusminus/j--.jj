@@ -270,6 +270,8 @@ TOKEN:
 TOKEN:
 {
   < INT_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)*) >
+//| < DOUBLE_LITERAL: ("0" | <NON_ZERO_DIGIT> (<DIGIT>)* )"."(<DIGIT>)+ >
+| < DOUBLE_LITERAL: (<DIGIT>)* "." (<DIGIT>)* >
 | < CHAR_LITERAL: "'" (<ESC> | ~["'","\\","\n","\r"]) "'" >
 | < STRING_LITERAL: "\"" (<ESC> | ~["\"","\\","\n","\r"])* "\"" >   
 | < #ESC: "\\" ["n","t","b","r","f","\\","'","\""] >
@@ -613,7 +615,9 @@ private JMember memberDecl( ArrayList<String>  mods ): {
             { 
                 memberDecl = 
                 new JConstructorDeclaration( line, mods, 
+
                                              name, params, idents, body );
+
             }
         ) |     
         LOOKAHEAD( ( <VOID> | type() ) <IDENTIFIER> <LPAREN> )
@@ -634,9 +638,9 @@ private JMember memberDecl( ArrayList<String>  mods ): {
                 <SEMI> 
             )
             { 
-                memberDecl = 
-                   new JMethodDeclaration( line, mods, name,
+                memberDecl = new JMethodDeclaration( line, mods, name,
                                            type, params, idents, body ); 
+
             } 
         ) | 
         ( 
@@ -1165,7 +1169,7 @@ private Type type(): {
  * Parse a basic type.
  * 
  * <pre>
- *   basicType ::= BOOLEAN | CHAR | INT
+ *   basicType ::= BOOLEAN | CHAR | INT | DOUBLE
  * </pre>
  * 
  * @return an instance of Type.
@@ -1176,9 +1180,10 @@ private Type basicType(): {
 }
 {
     try {
-        <BOOLEAN> { type = Type.BOOLEAN; } |
-        <CHAR> { type = Type.CHAR; } |
-        <INT> { type = Type.INT; }
+        <BOOLEAN>	{ type = Type.BOOLEAN; }  |
+        <CHAR> 		{ type = Type.CHAR; }     |
+        <INT> 		{ type = Type.INT; }      |
+        <DOUBLE> 	{ type = Type.DOUBLE; }
     } 
     catch ( ParseException e ) { 
         recoverFromError( new int[] { SEMI, EOF }, e ); 
@@ -1241,10 +1246,10 @@ private JStatement statementExpression(): {
         {
             line = expr.line();
             if ( expr instanceof JAssignment
-              || expr instanceof JPreIncrementOp
+	      || expr instanceof JPreIncrementOp
+              || expr instanceof JPreDecrementOp
               || expr instanceof JPostDecrementOp
-			  || expr instanceof JPostIncrementOp
-			  || expr instanceof JPreIncrementOp
+	      || expr instanceof JPostIncrementOp
               || expr instanceof JMessageExpression
               || expr instanceof JSuperConstruction
               || expr instanceof JThisConstruction 
@@ -1293,7 +1298,9 @@ private JExpression expression(): {
  * 
  * <pre>
  *   assignmentExpression ::= 
- *       conditionalOrExpression // level 13
+
+ *       conditionalExpression // level 14
+*
  *           [( ASSIGN  // conditionalExpression
  *            | PLUS_ASSIGN // must be valid lhs
  *            | MINUS_ASSIGN // must be valid lhs
@@ -1313,7 +1320,9 @@ private JExpression assignmentExpression(): {
 }
 {
     try {
-        lhs = conditionalOrExpression() { line = lhs.line(); }
+
+        lhs = conditionalExpression() { line = lhs.line(); }
+
         [       
             <ASSIGN> 
             rhs = assignmentExpression()
@@ -1323,7 +1332,7 @@ private JExpression assignmentExpression(): {
             { lhs = new JPlusAssignOp( line, lhs, rhs ); } |
             <MINUS_ASSIGN>
             rhs = assignmentExpression()
-            { lhs = new JSubtractAssignOp( line, lhs, rhs ); } |
+            { lhs = new JMinusAssignOp( line, lhs, rhs ); } |
             <STAR_ASSIGN>
             rhs = assignmentExpression()
             { lhs = new JMultiplyAssignOp( line, lhs, rhs ); } |
@@ -1339,6 +1348,34 @@ private JExpression assignmentExpression(): {
         recoverFromError( new int[] { SEMI, EOF }, e ); 
     }
     { return lhs; }
+}
+/**
+*	condtionExpression:= orExpression [ ? orExpression : conditionExpression ] 
+*
+*
+**/
+
+private JExpression conditionalExpression():{
+	int line = 0;
+	JExpression test = null, lhs = null, rhs = null;
+}
+{
+	try {
+        test = conditionalOrExpression() {line = test.line();}
+        [
+            <QM>
+            lhs = conditionalOrExpression()
+            <COLON>
+            rhs = conditionalExpression()
+            { test = new JConditionalExpression(line,test,lhs,rhs); }
+        ]
+    
+    }
+    catch(ParseException e){
+        recoverFromError( new int[] {SEMI, EOF}, e);
+    }
+	
+	{ return test; }
 }
 
 /**
@@ -1544,16 +1581,16 @@ private JExpression relationalExpression(): {
         [ 
             <GT> 
             rhs = shiftExpression()
-            { lhs = new JGreaterThanOp( line, lhs, rhs ); } |
+            { lhs = new JGreaterThanOp( line, lhs, rhs ); }     |
             <LE> 
             rhs = shiftExpression()
-            { lhs = new JLessEqualOp( line, lhs, rhs ); } |
-			<GE>
+            { lhs = new JLessEqualOp( line, lhs, rhs ); }       |
+	    <GE>
             rhs = shiftExpression()
-            { lhs = new JGreaterEqualOp( line, lhs, rhs ); } |
-			<LT>
+            { lhs = new JGreaterEqualOp( line, lhs, rhs ); }    |
+	    <LT>
             rhs = shiftExpression()
-            { lhs = new JLessOp( line, lhs, rhs ); } |
+            { lhs = new JLessOp( line, lhs, rhs ); }            |
             <INSTANCEOF> 
             type = referenceType()
             { lhs = new JInstanceOfOp( line, lhs, type ); }
@@ -1680,6 +1717,7 @@ private JExpression multiplicativeExpression(): {
  * 
  * <pre>
  *   unaryExpression ::= INC unaryExpression // level 1
+ *					   | DEC unaryExpression
  *                     | MINUS unaryExpression
  *                     | PLUS unaryExpression
  *                     | BNOT unaryExpression
@@ -1699,6 +1737,7 @@ private JExpression unaryExpression(): {
         unaryExpr = unaryExpression()
         { expr = new JPreIncrementOp( line, unaryExpr ); } | 
         <DEC> { line = token.beginLine; }
+        unaryExpr = unaryExpression()
         { expr = new JPreDecrementOp( line, unaryExpr ); } | 
         <MINUS> { line = token.beginLine; }
         unaryExpr = unaryExpression()
@@ -1786,7 +1825,7 @@ private JExpression postfixExpression(): {
         ( 
             <DEC> 
             { primaryExpr = 
-                new JPostDecrementOp( line, primaryExpr ); } 
+                new JPostDecrementOp( line, primaryExpr ); } |
 
             <INC> 
             { primaryExpr = 
@@ -2017,7 +2056,7 @@ private JNewArrayOp newArrayDeclarator( Type type ): {
  * Parse a literal.
  * 
  * <pre>
- *   literal ::= INT_LITERAL | CHAR_LITERAL | STRING_LITERAL
+ *   literal ::= INT_LITERAL | DOUBLE_LITERAL | CHAR_LITERAL | STRING_LITERAL
  *             | TRUE        | FALSE        | NULL
  * </pre>
  * 
@@ -2030,16 +2069,17 @@ private JExpression literal(): {
 {       
     try {
         <INT_LITERAL> 
-        { expr = new JLiteralInt( token.beginLine, token.image ); } | 
+        { expr = new JLiteralInt( token.beginLine, token.image ); }     | 
+        <DOUBLE_LITERAL> 
+        { expr = new JLiteralDouble( token.beginLine, token.image ); }  | 
         <CHAR_LITERAL> 
-        { expr = new JLiteralChar( token.beginLine, token.image ); } |
+        { expr = new JLiteralChar( token.beginLine, token.image ); }    |
         <STRING_LITERAL> 
-        { expr = 
-              new JLiteralString( token.beginLine, token.image ); } | 
+        { expr = new JLiteralString( token.beginLine, token.image ); }  | 
         <TRUE> 
-        { expr = new JLiteralTrue( token.beginLine ); } | 
+        { expr = new JLiteralTrue( token.beginLine ); }                 | 
         <FALSE> 
-        { expr = new JLiteralFalse( token.beginLine ); } |
+        { expr = new JLiteralFalse( token.beginLine ); }                |
         <NULL> 
         { expr = new JLiteralNull( token.beginLine ); }
     } 

@@ -69,7 +69,8 @@ class JVariableDeclaration extends JStatement {
             int offset = ((LocalContext) context).nextOffset();
             LocalVariableDefn defn = new LocalVariableDefn(decl.type().resolve(
                     context), offset);
-
+            if(decl.type() == Type.DOUBLE) // <-- on Double add extra stack frame offset. Double = 8 bytes
+            	((LocalContext)context).nextOffset();
             // First, check for shadowing
             IDefn previousDefn = context.lookup(decl.name());
             if (previousDefn != null

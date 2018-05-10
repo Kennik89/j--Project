@@ -106,6 +106,8 @@ class JConstructorDeclaration extends JMethodDeclaration implements JMember {
             LocalVariableDefn defn = 
 		new LocalVariableDefn(param.type(),
 				      this.context.nextOffset());
+            if(param.type() == Type.DOUBLE)
+            	this.context.nextOffset();
             defn.initialize();
             this.context.addEntry(param.line(), param.name(), defn);
         }

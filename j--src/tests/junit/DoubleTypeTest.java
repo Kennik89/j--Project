@@ -30,23 +30,23 @@ public class DoubleTypeTest extends TestCase {
 		}
 	}
 	
-	public void testCorrectParamValues() {
-		DoubleBasicDataType d = new DoubleBasicDataType();
-		try {
-			double expected1 = 783.8,expected2 = 3.232;
-			
-			double actual = d.correctMethodsParamValue(expected1);
-			
-			assertEquals(expected1, actual);
-			
-			double[] actuals = d.correctMethodsParamsValues(expected1, expected2);
-			
-			assertEquals(expected1, actuals[0]);
-			assertEquals(expected2, actuals[1]);
-		}catch(Exception e) {
-			super.fail("two method params not accepted");
-		}
-	}
+//	public void testCorrectParamValues() {
+//		DoubleBasicDataType d = new DoubleBasicDataType();
+//		try {
+//			double expected1 = 783.8,expected2 = 3.232;
+//			
+//			double actual = d.correctMethodsParamValue(expected1);
+//			
+//			assertEquals(expected1, actual);
+//			
+//			double[] actuals = d.correctMethodsParamsValues(expected1, expected2);
+//			
+//			assertEquals(expected1, actuals[0]);
+//			assertEquals(expected2, actuals[1]);
+//		}catch(Exception e) {
+//			super.fail("two method params not accepted");
+//		}
+//	}
 	
 	// assignments ######################################
 	public void testAssignment() {
