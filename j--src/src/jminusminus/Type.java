@@ -461,8 +461,8 @@ class Type {
      */
 
     private static String toJava(Class classRep) {
-        return classRep.isArray() ? toJava(classRep.getComponentType()) + "[]"
-                : classRep.getName();
+        return classRep == null ? "" : (classRep.isArray() ? toJava(classRep.getComponentType()) + "[]"
+                : classRep.getName());
     }
 
     /**
